@@ -384,7 +384,7 @@ async function run(contract,query,isFirst){
   const typing=addMsg('a','<span class="dots"><span></span><span></span><span></span></span>'+(isFirst?'جارٍ تدقيق العقد…':'المستشار يكتب…'));
   try{
     const res=await fetch(PROXY_URL,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({user_role:chatRole||roleEl.value,contract_text:contract,query,conversation_id:conversationId,user_id:USER_ID})});
+      body:JSON.stringify({user_role:chatRole||roleEl.value,contract_text:contract,query,conversation_id:conversationId,user_id:USER_ID,want_flaws:!!isFirst})});
     const data=await res.json().catch(()=>({}));
     if(!res.ok) throw new Error(data.message||('تعذّر الاتصال بالخدمة (رمز '+res.status+')'));
     if(!data.answer) throw new Error(data.message||'لم تُرجع الخدمة إجابة.');
