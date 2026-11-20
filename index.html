@@ -156,15 +156,74 @@ body{background:linear-gradient(180deg,#263065 0%,#2c3d66 50%,#3c5d72 100%) fixe
 .flaw-card h4{font-weight:800;margin-bottom:.3rem}
 .flaw-card .lbl{font-weight:800;color:#2f7a78}
 .flaw-card .alt{margin-top:.5rem;padding:.6rem .8rem;background:#ecfdf5;border-radius:10px;border:1px dashed #1f9d74}
+
+/* ===================== مُحكم v2: طبقة التصميم الجديدة (الألوان الأصلية محفوظة) ===================== */
+:root{--cream:#FAF9F6;--navy:#263065;--card:linear-gradient(160deg,#263065 0%,#2d4a6e 55%,#2f6a78 100%)}
+body{font-family:'IBM Plex Sans Arabic','Thmanyah Sans','Tajawal',system-ui,sans-serif;background:var(--cream)!important;color:var(--navy);--muted:#5d6a8a}
+.aurora{display:none}
+.glass{background:var(--card)!important;border:1px solid rgba(38,48,101,.25);box-shadow:0 18px 40px -22px rgba(38,48,101,.55);color:#fff;--muted:#cbd8ea;--ink:#fff}
+.grad-text{background-image:linear-gradient(100deg,#263065,#2f7a78 60%,#1f9d74)}
+.glass .grad-text{background-image:linear-gradient(100deg,#fff,#8fe9c6)}
+.sec-title::before,.sec-title::after{background:linear-gradient(90deg,transparent,rgba(38,48,101,.45))}
+header.glass .grad-text{background-image:linear-gradient(100deg,#fff,#8fe9c6)}
+.gov-bar{background:#17204a;color:#e8dcb8;font-size:.78rem;font-weight:600;text-align:center;padding:.4rem 1rem;line-height:1.7}
+.gov-bar b{color:#F2D58B}
+.tabs{display:flex;gap:.25rem;overflow-x:auto;max-width:100%;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{white-space:nowrap;padding:.5rem .8rem;border-radius:12px;color:#cbd8ea;font-weight:700;font-size:.85rem;transition:.2s}
+.tab:hover{background:rgba(255,255,255,.1);color:#fff}
+.tab.on{background:#fff;color:var(--navy)}
+.nafath{background:linear-gradient(110deg,#B98B3E,#C5A059,#F2D58B);color:#3B2A07;font-weight:800;border-radius:12px;padding:.5rem .9rem;font-size:.8rem;white-space:nowrap}
+.card{background:var(--card);color:#fff;border-radius:20px;border:1px solid rgba(38,48,101,.25);box-shadow:0 18px 40px -22px rgba(38,48,101,.55)}
+.stat{padding:1.3rem;text-align:right}
+.stat .num{font-size:2.3rem;font-weight:800;line-height:1.2;background:linear-gradient(100deg,#fff,#8fe9c6);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat .lbl{font-weight:800;margin-top:.2rem}.stat .sub{font-size:.82rem;color:#cbd8ea;margin-top:.3rem;line-height:1.8}
+.toolbar{display:flex;flex-wrap:wrap;gap:.5rem;padding:.7rem 1rem;border-bottom:1px solid rgba(255,255,255,.12);background:rgba(15,26,61,.25)}
+.tbtn{padding:.4rem .85rem;border-radius:12px;font-weight:700;font-size:.82rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);color:#fff;transition:.2s}
+.tbtn:hover{background:rgba(255,255,255,.2)}
+.tbtn.gold{background:linear-gradient(110deg,#B98B3E,#C5A059,#F2D58B);color:#3B2A07;border:0}
+.panel{background:#fff;color:var(--navy);border-radius:16px;margin:.7rem 1rem;padding:1rem;border:1px solid #E3E9F5;--muted:#5d6a8a;--ink:#263065}
+.bal-bar{display:flex;height:14px;border-radius:999px;overflow:hidden;background:#E3E9F5;margin:.5rem 0}
+.bal-bar i{display:block;transition:width .8s}
+.impr-res{white-space:pre-wrap;background:#ecfdf5;border:1px dashed #1f9d74;border-radius:12px;padding:.8rem;line-height:2}
+.rk{padding:.15rem .7rem;border-radius:999px;font-weight:800;font-size:.78rem}
+.rk-high{background:#fee2e2;color:#991b1b}.rk-medium{background:#fef3c7;color:#92400e}.rk-low{background:#dcfce7;color:#166534}
+.doc-wrap{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:1rem;align-items:start}
+@media(max-width:900px){.doc-wrap{grid-template-columns:1fr}}
+.doc-bar{display:flex;flex-wrap:wrap;gap:.4rem;padding:.5rem;background:#EEF3FA;border:1px solid #DCE3F0;border-radius:12px 12px 0 0}
+.doc-bar button{padding:.3rem .7rem;border-radius:8px;background:#fff;border:1px solid #C9D4EA;font-weight:700;font-size:.82rem;color:var(--navy)}
+.doc-bar button:hover{background:#E3E9F5}
+.doc-page{background:#fff;color:#1e293b;min-height:520px;padding:2.2rem 2rem;border:1px solid #DCE3F0;border-top:0;border-radius:0 0 12px 12px;box-shadow:0 20px 40px -28px rgba(38,48,101,.5);line-height:2.1;outline:none;font-size:1.02rem}
+.doc-page:focus{box-shadow:0 0 0 3px rgba(47,122,120,.18)}
+.side{position:sticky;top:76px;max-height:80vh;overflow-y:auto;padding:1rem}
+.alert-i{background:#fff;color:var(--navy);border-radius:12px;padding:.7rem .8rem;margin-top:.6rem;border-right:5px solid #f59e0b;font-size:.86rem;line-height:1.8}
+.alert-i.high{border-right-color:#ef4444}.alert-i.medium{border-right-color:#f59e0b}
+.alert-i q{display:block;color:#5d6a8a;font-size:.8rem;margin:.2rem 0}
+.tbl{width:100%;border-collapse:collapse;font-size:.92rem}
+.tbl th{background:#EEF3FA;color:var(--navy);padding:.7rem;text-align:right}
+.tbl td{padding:.7rem;border-top:1px solid #E3E9F5;text-align:right;vertical-align:middle}
+.tgl{display:inline-flex;background:#EEF3FA;border-radius:999px;padding:3px;border:1px solid #C9D4EA}
+.tgl button{padding:.35rem .9rem;border-radius:999px;font-weight:700;font-size:.82rem;color:#5d6a8a}
+.tgl button.on{background:var(--navy);color:#fff}
+.stp{display:flex;gap:.4rem;margin:.6rem 0}
+.stp span{flex:1;text-align:center;padding:.35rem;border-radius:10px;font-size:.8rem;font-weight:700;background:#EEF3FA;color:#5d6a8a}
+.stp span.on{background:#2f7a78;color:#fff}
+.fld label{display:block;font-weight:700;font-size:.82rem;margin:.6rem 0 .2rem;color:#263065}
+.fld input{width:100%;border:1.5px solid #DCE3F0;border-radius:10px;padding:.5rem .7rem;color:#263065;background:#fff}
+.fld input:focus{outline:none;border-color:#2f7a78}
+.hidden{display:none}
 </style>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
 <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
 
+<!-- شريط الحوكمة وحماية البيانات -->
+<div class="gov-bar no-print">🛡️ <b>حوكمة وحماية البيانات:</b> يُعالَج النص وفق نظام حماية البيانات الشخصية · يمكنك إخفاء بياناتك الحساسة قبل الإرسال · الأداة مساندة ولا تغني عن المحامي المرخّص.</div>
 <!-- الترويسة -->
 <header class="no-print sticky top-0 z-30 glass" style="border-width:0 0 1px 0">
-  <div class="max-w-6xl mx-auto px-5 py-3 flex items-center justify-between">
+  <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-3 flex-wrap">
     <div class="flex items-center gap-3">
       <div class="w-11 h-11 rounded-2xl flex items-center justify-center text-white text-xl font-extrabold"
            style="background:linear-gradient(135deg,var(--indigo),var(--violet) 55%,var(--gold))">م</div>
@@ -173,13 +232,18 @@ body{background:linear-gradient(180deg,#263065 0%,#2c3d66 50%,#3c5d72 100%) fixe
         <div class="text-xs text-[var(--muted)] font-bold tracking-wide">Muhkam</div>
       </div>
     </div>
-    <nav class="flex items-center gap-1 sm:gap-2 text-sm font-bold">
-      <a href="#templates" class="px-3 py-2 rounded-xl hover:bg-[#EEF3FA] text-[var(--muted)] hover:text-[var(--indigo)] transition">نماذج العقود</a>
-      <a href="#assistant" class="btn-main px-4 py-2 text-sm">🤖 مساعد مُحكَم</a>
+    <nav class="tabs" id="tabs">
+      <button class="tab on" data-view="home">🏠 الرئيسية</button>
+      <button class="tab" data-view="home" data-anchor="templates">📚 نماذج العقود</button>
+      <button class="tab" data-view="home" data-anchor="assistant">🤖 مساعد مُحكَم</button>
+      <button class="tab" data-view="addin">🧩 إضافة المحرر الذكية (Add-in)</button>
+      <button class="tab" data-view="dash">📁 عقودي السابقة</button>
     </nav>
+    <button class="nafath" id="nafathBtn" type="button">🪪 الدخول عبر النفاذ الوطني الموحد</button>
   </div>
 </header>
 
+<div id="view-home">
 <!-- الواجهة الرئيسية -->
 <section class="max-w-4xl mx-auto px-5 pt-14 pb-10 text-right">
   <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/80 border border-[#C9D4EA] text-sm font-bold text-[var(--violet)] mb-6">⚖️ منصتك القانونية للعقود</div>
@@ -193,7 +257,18 @@ body{background:linear-gradient(180deg,#263065 0%,#2c3d66 50%,#3c5d72 100%) fixe
   </div>
 </section>
 
+<!-- إحصائيات الأثر -->
+<section class="max-w-6xl mx-auto px-5 pb-14" aria-label="إحصائيات الأثر">
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4" id="stats">
+    <div class="card stat"><div class="num" data-count="85" data-pre="+" data-suf="%">+85%</div><div class="lbl">توفير في وقت المراجعة</div><div class="sub">تقليص مدة التدقيق الأولي من ساعات إلى ثوانٍ.</div></div>
+    <div class="card stat"><div class="num" data-count="100" data-suf="%">100%</div><div class="lbl">حماية للخصوصية</div><div class="sub">إخفاء تلقائي للبيانات الحساسة قبل المعالجة.</div></div>
+    <div class="card stat"><div class="num" data-count="15" data-pre="+">+15</div><div class="lbl">نظاماً ولائحة سعودية</div><div class="sub">تغطية نظام المعاملات المدنية، العمل، والشركات.</div></div>
+    <div class="card stat"><div class="num" data-count="3">3</div><div class="lbl">مستويات لتصنيف المخاطر</div><div class="sub">كشف استباقي للثغرات (عالية، متوسطة، منخفضة).</div></div>
+  </div>
+</section>
+
 <!-- نماذج العقود -->
+
 <section id="templates" class="max-w-6xl mx-auto px-5 pb-16 scroll-mt-20">
   <div class="text-center mb-8">
     <h2 class="sec-title text-3xl font-extrabold">نماذج <span class="gold-text">العقود</span></h2>
@@ -231,6 +306,16 @@ body{background:linear-gradient(180deg,#263065 0%,#2c3d66 50%,#3c5d72 100%) fixe
         <button type="button" data-role="الطرف الثاني">الطرف الثاني</button>
       </div>
     </div>
+    <!-- الأدوات المساندة -->
+    <div class="toolbar no-print">
+      <button type="button" class="tbtn" id="btnMask">🔒 إخفاء البيانات الحساسة</button>
+      <button type="button" class="tbtn" id="btnUnmask">↩️ استعادة النص الأصلي</button>
+      <button type="button" class="tbtn" id="btnBalance">⚖️ قياس توازن العقد</button>
+      <button type="button" class="tbtn gold" id="btnImprove">مُحسِّن الصياغة 🖋️</button>
+    </div>
+    <div id="privNote" class="panel hidden" style="color:#166534;background:#f0fdf4;border-color:#bbf7d0"></div>
+    <div id="balPanel" class="panel hidden"></div>
+    <div id="imprPanel" class="panel hidden"></div>
     <!-- الرسائل -->
     <div id="msgs" class="chat-body" aria-live="polite"></div>
     <!-- اقتراحات سريعة (تظهر بعد المذكرة الأولى) -->
@@ -248,6 +333,45 @@ body{background:linear-gradient(180deg,#263065 0%,#2c3d66 50%,#3c5d72 100%) fixe
   </div>
 </main>
 
+</div><!-- /view-home -->
+
+<!-- إضافة المحرر الذكية -->
+<div id="view-addin" class="hidden max-w-6xl mx-auto px-4 py-10">
+  <div class="text-center mb-6"><h2 class="sec-title text-3xl font-extrabold">🧩 إضافة <span class="grad-text">المحرر الذكية</span></h2>
+    <p class="mt-2" style="color:var(--muted)">محاكاة لإضافة «مُحكم» داخل Word / Google Docs: اكتب في الورقة وستراقب الإضافة النص لحظياً.</p></div>
+  <div class="doc-wrap">
+    <div>
+      <div class="doc-bar">
+        <button data-cmd="bold"><b>B</b> عريض</button>
+        <button data-cmd="h">عنوان</button>
+        <button data-cmd="justifyRight">⇥ يمين</button><button data-cmd="justifyCenter">≡ وسط</button><button data-cmd="justifyLeft">⇤ يسار</button>
+        <button data-cmd="sample">📄 إدراج نص عقد تجريبي</button>
+      </div>
+      <div id="docPage" class="doc-page" contenteditable="true" dir="rtl" spellcheck="false" aria-label="ورقة المستند"></div>
+    </div>
+    <aside class="card side" aria-label="إضافة مُحكم">
+      <div class="flex items-center gap-3"><div class="avatar avatar-lg">م</div><div class="leading-tight"><div class="font-extrabold">إضافة مُحكم</div><div class="text-xs flex items-center gap-1.5" style="color:#cbd8ea"><span class="w-2 h-2 rounded-full bg-[var(--mint)] pulse-dot"></span>مراقبة لحظية <span id="monCount"></span></div></div></div>
+      <div id="monList"></div>
+      <div id="monImpr" class="panel hidden" style="margin:.8rem 0 0"></div>
+    </aside>
+  </div>
+</div>
+
+<!-- عقودي السابقة -->
+<div id="view-dash" class="hidden max-w-6xl mx-auto px-4 py-10">
+  <div class="text-center mb-6"><h2 class="sec-title text-3xl font-extrabold">📁 عقودي <span class="grad-text">السابقة</span></h2></div>
+  <div class="grid sm:grid-cols-3 gap-4 mb-6" id="kpis"></div>
+  <div class="panel" style="margin:0;overflow-x:auto"><table class="tbl"><thead><tr><th>رقم المرجع</th><th>عنوان العقد</th><th>التاريخ</th><th>نسبة الامتثال</th><th>مستوى المخاطر</th><th></th></tr></thead><tbody id="hist"></tbody></table></div>
+  <div class="text-center mt-4"><button class="btn-ghost px-4 py-2 text-sm" id="clearHist">🗑️ مسح السجل</button></div>
+</div>
+
+<div id="memoModal" class="hidden fixed inset-0 z-40 flex items-center justify-center p-4 bg-[#0f1a3d]/60 backdrop-blur-sm no-print">
+  <div class="bg-white rounded-3xl w-full max-w-3xl max-h-[88vh] flex flex-col shadow-2xl" style="color:#263065">
+    <div class="p-5 border-b border-[#E3E9F5] flex items-center justify-between"><h3 id="mmTitle" class="font-extrabold text-xl"></h3><button id="mmClose" class="w-9 h-9 rounded-full hover:bg-[#EEF3FA] text-xl" aria-label="إغلاق">✕</button></div>
+    <div id="mmBody" class="p-5 overflow-y-auto prose-ar"></div>
+  </div>
+</div>
+
 <footer class="no-print text-center pb-10 text-sm font-bold text-[var(--muted)]">
   <span class="gold-text">مُحكم | Muhkam</span> — جميع الحقوق محفوظة
 </footer>
@@ -258,7 +382,13 @@ body{background:linear-gradient(180deg,#263065 0%,#2c3d66 50%,#3c5d72 100%) fixe
       <h3 id="mTitle" class="font-extrabold text-xl grad-text"></h3>
       <button id="mClose" class="w-9 h-9 rounded-full hover:bg-[#EEF3FA] text-xl" aria-label="إغلاق">✕</button>
     </div>
-    <pre id="mText" class="p-5 overflow-y-auto whitespace-pre-wrap leading-9 text-[15px]" style="font-family:inherit"></pre>
+        <div class="px-5 pt-3 flex flex-wrap items-center gap-2 no-print" id="tplMode">
+      <span class="text-sm font-bold" style="color:#5d6a8a">طريقة التعبئة:</span>
+      <div class="tgl"><button type="button" data-mode="stepper" class="on">✨ التعبئة الذكية بالخطوات</button><button type="button" data-mode="manual">✍️ تعديل يدوي</button></div>
+    </div>
+    <div id="stepBox" class="px-5 pb-2 hidden" style="color:#263065"></div>
+    <pre id="mText"
+ class="p-5 overflow-y-auto whitespace-pre-wrap leading-9 text-[15px]" style="font-family:inherit"></pre>
     <div class="p-4 border-t border-[#E3E9F5] flex flex-wrap gap-2">
       <button id="mUse" class="btn-main px-4 py-2.5 text-sm">🤖 دقّق بالمساعد</button>
       <button id="mCopy" class="btn-ghost px-4 py-2.5 text-sm">📋 نسخ</button>
@@ -822,6 +952,271 @@ $('mPrint').onclick=()=>{
   w.document.close(); w.focus(); w.print();
 };
 renderTpl();
+
+/* =====================================================================
+   مُحكم v2 — الوحدات (Modules). كل وحدة مستقلة ويمكن إضافة مزايا جديدة بسهولة.
+   ===================================================================== */
+
+/* ثابت جاهز للربط مع أي API ذكاء اصطناعي: تعليمات الصياغة القانونية السعودية الرصينة */
+const SAUDI_DRAFTING_SYSTEM_PROMPT = `أنت مستشار قانوني سعودي ضليع، وصائغ تشريعي رفيع البيان، متمرس في الصياغة العقدية والنظامية المستمدة من أمهات الكتب الفقهية، وتسبيبات الأحكام القضائية في المحاكم السعودية، ومرئيات هيئة الخبراء بمجلس الوزراء، وأحكام نظام المعاملات المدنية والأنظمة السعودية ذات الصلة.
+المهمة: إعادة صياغة النص أو البند المدخل (الركيك أو العامي أو الغامض أو المترجم حرفياً) بلغة قانونية سعودية رصينة جزلة قاطعة الدلالة تمنع التأويل وتدرأ النزاع.
+القواعد: (1) الرصانة والجزالة القضائية: حيث إنه من المقرر شرعاً ونظاماً، وتأسيساً على ما تقدم، وإعمالاً لقاعدة أن العقد شريعة المتعاقدين، وبما لا يخل بالنظام العام وحسن النية. (2) القطعية: استبدل الألفاظ الاحتمالية بأفعال الإلزام (يلتزم، يتعهد، ينحصر، يسقط حقه، يُعدّ إخلالاً جوهرياً، ينفسخ تلقائياً)، وانضبط بالمدد والمبالغ والأماكن وتجنب الألفاظ المطاطة (قريباً، مبلغ مناسب، حسب الاتفاق) واستبدلها بصيغ منضبطة مثل: خلال مدة أقصاها [عدد] أيام عمل بموجب إشعار خطي موثق. (3) التأصيل: استخدم مصطلحات نظام المعاملات المدنية (الإيجاب والقبول، القوة القاهرة، الظروف الطارئة، التعويض الاتفاقي، الفسخ، الإقالة، الضمان، الغرر، الإذعان، التضامن) واستحضر القواعد الفقهية (لا ضرر ولا ضرار، الغرم بالغنم، العبرة في العقود للمقاصد والمعاني). (4) تجنب الحشو، واربط الجمل بأدوات نظامية (شريطة أن، ما لم، على أن، مع عدم الإخلال بـ).
+الرد في ثلاثة أقسام فقط دون مقدمات، بهذه العناوين بالضبط:
+1. الصياغة القانونية المحكمة:
+2. مواطن التحسين والضبط الصياغي: (نقاط موجزة)
+3. الأساس النظامي أو القاعدة الأصولية: (باختصار، إن وجد)`;
+
+const Dom = {
+  show:(id,on=true)=>$(id).classList.toggle('hidden',!on),
+  sel:()=>{ const s=contractEl.selectionStart,e=contractEl.selectionEnd; return e>s?{s,e,text:contractEl.value.slice(s,e)}:null; }
+};
+
+/* ---------- التنقل بين التبويبات + النفاذ الوطني (تجريبي) ---------- */
+const NavModule=(()=>{
+  const views=['home','addin','dash'];
+  function go(v,anchor){
+    views.forEach(x=>Dom.show('view-'+x,x===v));
+    document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('on',b.dataset.view===v&&(b.dataset.anchor||'')===(anchor||'')));
+    if(v==='dash') DashboardModule.render();
+    if(v==='addin') AddinModule.scan();
+    window.scrollTo({top:0});
+    if(anchor) setTimeout(()=>$(anchor).scrollIntoView({behavior:'smooth'}),30);
+  }
+  $('tabs').addEventListener('click',e=>{const b=e.target.closest('.tab'); if(b) go(b.dataset.view,b.dataset.anchor);});
+  document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]'); if(!a) return; const id=a.getAttribute('href').slice(1); if(['templates','assistant'].includes(id)){ e.preventDefault(); go('home',id);} });
+  $('nafathBtn').onclick=()=>{ const b=$('nafathBtn'); if(b.dataset.in){toast('تم تسجيل الخروج');b.dataset.in='';b.textContent='🪪 الدخول عبر النفاذ الوطني الموحد';return;} toast('جارٍ التحقق عبر النفاذ… (محاكاة)'); setTimeout(()=>{b.dataset.in='1';b.textContent='✅ مرحباً · مستخدم تجريبي (خروج)';toast('تم الدخول تجريبياً ✓');},900); };
+  return {go};
+})();
+
+/* ---------- عدّاد الإحصائيات ---------- */
+(function StatsModule(){
+  const els=[...document.querySelectorAll('#stats .num')];
+  const run=el=>{ const n=+el.dataset.count,pre=el.dataset.pre||'',suf=el.dataset.suf||''; const t0=performance.now(); const step=t=>{const p=Math.min(1,(t-t0)/1400);el.textContent=pre+Math.round(n*(1-Math.pow(1-p,3)))+suf; if(p<1)requestAnimationFrame(step);}; requestAnimationFrame(step); };
+  if(!('IntersectionObserver' in window)) return;
+  const io=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){run(x.target);io.unobserve(x.target);}}),{threshold:.4});
+  els.forEach(e=>io.observe(e));
+})();
+
+/* ---------- إخفاء البيانات الحساسة (Client-side Regex) ---------- */
+const PrivacyModule=(()=>{
+  let original=null;
+  const D='[0-9٠-٩]', nb='(?<![0-9٠-٩A-Za-z])', na='(?![0-9٠-٩])';
+  /* الترتيب مهم: الأخص أولاً */
+  const RULES=[
+    {tag:'[بريد_مخفي]',re:/[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}/g},
+    {tag:'[آيبان_مخفي]',re:/(?<![A-Za-z0-9])SA\s?\d{2}(?:\s?[0-9A-Za-z]{4}){5}(?![0-9A-Za-z])/gi},
+    {tag:'[جوال_مخفي]',re:new RegExp(nb+'(?:\\+?966\\s?|00966\\s?)5'+D+'{8}'+na+'|'+nb+'05'+D+'{8}'+na,'g')},
+    {tag:'[هوية_مخفية]',re:new RegExp(nb+'[12'+'١٢]'+D+'{9}'+na,'g')},
+    {tag:'[سجل_تجاري_مخفي]',re:new RegExp(nb+'[74'+'٧٤]'+D+'{9}'+na,'g')}
+  ];
+  function mask(){
+    const t=contractEl.value; if(!t.trim()){toast('لا يوجد نص لإخفائه');return;}
+    let out=t,total=0; const per={};
+    RULES.forEach(r=>{ out=out.replace(r.re,()=>{total++;per[r.tag]=(per[r.tag]||0)+1;return r.tag;}); });
+    if(!total){ Dom.show('privNote',true); $('privNote').textContent='✅ لم تُرصد بيانات حساسة في النص.'; return; }
+    if(original===null) original=t;
+    contractEl.value=out; updateCount();
+    $('privNote').innerHTML='🔒 تم حماية <b>'+total.toLocaleString('ar-SA')+'</b> عنصراً: '+Object.entries(per).map(([k,v])=>k+' ×'+v).join(' · ');
+    Dom.show('privNote',true);
+  }
+  function restore(){ if(original===null){toast('لا يوجد نص أصلي لاستعادته');return;} contractEl.value=original; original=null; updateCount(); Dom.show('privNote',false); toast('تمت استعادة النص الأصلي ↩️'); }
+  $('btnMask').onclick=mask; $('btnUnmask').onclick=restore;
+  return {mask,restore};
+})();
+
+/* ---------- قياس توازن العقد ---------- */
+const BalanceModule=(()=>{
+  const F1=/يحق\s+للطرف\s+الأول|يلتزم\s+الطرف\s+الثاني|لا\s+يتحمل\s+الطرف\s+الأول|يتنازل\s+الطرف\s+الثاني|لا\s+يحق\s+للطرف\s+الثاني|(?:يحدده|يراه|يختاره|يقدّره|يقدره)\s+الطرف\s+الأول|الطرف\s+الأول\s+(?:وحده|منفرداً)|يتحمل\s+الطرف\s+الثاني/g;
+  const F2=/يحق\s+للطرف\s+الثاني|يلتزم\s+الطرف\s+الأول|لا\s+يتحمل\s+الطرف\s+الثاني|يتنازل\s+الطرف\s+الأول|لا\s+يحق\s+للطرف\s+الأول|(?:يحدده|يراه|يختاره|يقدّره|يقدره)\s+الطرف\s+الثاني|الطرف\s+الثاني\s+(?:وحده|منفرداً)|يتحمل\s+الطرف\s+الأول/g;
+  function measure(t){ const a=(t.match(F1)||[]).length,b=(t.match(F2)||[]).length; const p1=Math.round(100*(a+1)/(a+b+2)); return {a,b,p1,p2:100-p1}; }
+  function show(){
+    const t=contractEl.value||baseContract; if(!t.trim()){toast('أدخل نص العقد أولاً');return;}
+    const {a,b,p1,p2}=measure(t); const hi=p1>=p2?1:2, pc=Math.max(p1,p2), lo=100-pc;
+    const gap=Math.abs(p1-p2);
+    const rec = (a+b)===0 ? 'لم تُرصد مؤشرات انحياز صريحة؛ راجع المذكرة للتأكد.'
+      : gap<=20 ? 'العقد متوازن نسبياً؛ يكفي ضبط المدد والإشعارات.'
+      : 'يُوصى بإضافة حقوق مقابلة للطرف '+(hi===1?'الثاني':'الأول')+' (إنهاء بإشعار، تعويض متبادل، حد أعلى للغرامة) لتحقيق التوازن العقدي.';
+    $('balPanel').innerHTML=`<div class="font-extrabold">⚖️ توازن العقد</div>
+      <div class="bal-bar"><i style="width:${p1}%;background:#2f7a78"></i><i style="width:${p2}%;background:#C5A059"></i></div>
+      <div class="text-sm">${(a+b)===0?'':'يميل العقد لصالح الطرف '+(hi===1?'الأول':'الثاني')+' بنسبة <b>'+pc+'%</b> مقابل <b>'+lo+'%</b> للطرف '+(hi===1?'الثاني':'الأول')+'. '}<span style="color:#5d6a8a">(الأول ${p1}% · الثاني ${p2}%)</span></div>
+      <div class="text-sm mt-2">💡 ${rec}</div>`;
+    Dom.show('balPanel',true);
+  }
+  $('btnBalance').onclick=show;
+  return {measure,show};
+})();
+
+/* ---------- مُحسِّن الصياغة ---------- */
+const DraftingImproverModule=(()=>{
+  const LOCAL=[[/فلوس/g,'مبالغ مالية'],[/الشغل/g,'الأعمال'],[/يخصم عليه/g,'يحسم من مستحقاته'],[/يقدر/g,'جاز له'],[/يعطيه لمقاول ثاني/g,'إسناده إلى مقاول آخر على حساب المقاول المخل'],[/مقاول ثاني/g,'مقاول آخر'],[/في أقرب وقت/g,'خلال مدة أقصاها ([عدد]) أيام عمل'],[/قريباً/g,'خلال مدة أقصاها ([عدد]) أيام عمل'],[/مبلغ مناسب/g,'مبلغ مقطوع قدره ([المبلغ]) ريالاً سعودياً'],[/حسب الاتفاق/g,'وفقاً لما يُتفق عليه كتابةً بين الطرفين'],[/لازم/g,'يجب'],[/يلغي العقد/g,'فسخ العقد']];
+  const DEMO={
+    rewrite:'في حال إخلال الطرف الثاني (المقاول) بالتزامه الزمني وتأخره في إنجاز الأعمال وتسليمها في الموعد المحدد عقداً، استحق الطرف الأول (صاحب العمل) — دون حاجة إلى إنذار أو إثبات ضرر — حسم غرامة تأخير بواقع ([النسبة]%) من قيمة العقد الإجمالية عن كل يوم تأخير، وبما لا يتجاوز ([الحد الأقصى]%) من إجمالي قيمة العقد. وفي حال تجاوزت مدة التأخير ([عدد] يوماً) متصلة أو منفصلة، جاز للطرف الأول فسخ العقد فوراً وسحب الأعمال وتنفيذها على حساب الطرف الثاني، مع احتفاظ الطرف الأول بحقه في المطالبة بالتعويض عن كافة الأضرار المترتبة على ذلك.',
+    notes:['إزالة العامية (فلوس، شغل، يقدر) واعتماد مصطلحات الأطراف.','تقييد الغرامة بنسبة يومية وسقف أعلى منعاً للغرر والمبالغة.','ضبط المدة التي يتحول بعدها التأخير إلى سبب للفسخ.','النص على التنفيذ على حساب المقاول مع حفظ حق التعويض.'],
+    basis:'مقتضى «العقد شريعة المتعاقدين»، وأحكام التعويض الاتفاقي والفسخ في نظام المعاملات المدنية، وقاعدة «لا ضرر ولا ضرار».'
+  };
+  function parse(ans){
+    const s=String(ans||''); const i2=s.search(/مواطن\s+التحسين/), i3=s.search(/الأساس\s+النظامي/);
+    const clean=x=>x.replace(/^[\s\d.\-*#:«»]+/,'').trim();
+    const head=(i2>0?s.slice(0,i2):s).replace(/^\s*(?:#+\s*|\*+\s*)?1?\.?\s*\**\s*الصياغة\s+القانونية\s+المحكمة[^\n]*\n?/,'').replace(/\n[\s\d.#*]*$/,'');
+    const notes=i2>=0?(s.slice(i2,i3>i2?i3:undefined).split('\n').slice(1).map(l=>l.replace(/^[\s\-*•]+/,'').trim()).filter(Boolean)):[];
+    const basis=i3>=0?clean(s.slice(i3).split('\n').slice(1).join(' ')):'';
+    return {rewrite:clean(head)||s.trim(),notes,basis};
+  }
+  async function improve(text){
+    try{
+      if(PROXY_URL.includes('ضع-رابط')) throw 0;
+      const r=await fetch(PROXY_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user_role:'الطرف الأول',contract_text:text,query:SAUDI_DRAFTING_SYSTEM_PROMPT+'\n\nالنص المطلوب تحسينه:\n'+text,conversation_id:'',user_id:USER_ID,want_flaws:false})});
+      const d=await r.json(); if(!r.ok||!d.answer) throw 0;
+      return {...parse(d.answer),local:false};
+    }catch{
+      if(/المقاول/.test(text)&&/تأخر/.test(text)) return {...DEMO,local:true};
+      let o=text; LOCAL.forEach(([a,b])=>o=o.replace(a,b));
+      return {rewrite:o,notes:['استبدال الألفاظ العامية والمطاطة بصيغ منضبطة.','تعذّر الاتصال بالنموذج الذكي؛ هذه نسخة تجريبية محلية محدودة.'],basis:'يُراجع النص النهائي مع مختص.',local:true};
+    }
+  }
+  function card(r,adoptId){
+    return `<div class="font-extrabold mb-1">✍️ الصياغة القانونية المحكمة</div><div class="impr-res">${esc(r.rewrite)}</div>
+      <div class="font-extrabold mt-3 mb-1">🔧 مواطن التحسين والضبط الصياغي</div><ul class="text-sm" style="list-style:disc;margin-right:1.2rem;line-height:1.9">${(r.notes.length?r.notes:['تم ضبط الصياغة.']).map(n=>'<li>'+esc(n)+'</li>').join('')}</ul>
+      ${r.basis?'<div class="text-sm mt-2"><b>📖 الأساس:</b> '+esc(r.basis)+'</div>':''}
+      ${r.local?'<div class="text-xs mt-2" style="color:#92400e">⚠️ وضع تجريبي محلي (النموذج الذكي غير متاح الآن).</div>':''}
+      <div class="mt-3 flex gap-2"><button type="button" class="btn-main px-4 py-2 text-sm" id="${adoptId}">✅ اعتماد الصياغة في العقد</button></div>`;
+  }
+  let sel=null;
+  async function openChat(){
+    const s=Dom.sel(); const text=(s?s.text:contractEl.value).trim();
+    if(!text){toast('حدد بنداً أو الصق نصاً أولاً');return;}
+    if(text.length>4000){toast('حدد بنداً واحداً (حتى 4000 حرف)');return;}
+    sel=s; const p=$('imprPanel'); Dom.show('imprPanel',true);
+    p.innerHTML='<span class="dots"><span></span><span></span><span></span></span> جارٍ تحسين الصياغة…';
+    const r=await improve(text); p.innerHTML=card(r,'adoptChat');
+    $('adoptChat').onclick=()=>{
+      if(sel){ contractEl.value=contractEl.value.slice(0,sel.s)+r.rewrite+contractEl.value.slice(sel.e); } else contractEl.value=r.rewrite;
+      updateCount(); Dom.show('imprPanel',false); toast('تم اعتماد الصياغة في العقد ✓');
+    };
+  }
+  $('btnImprove').onclick=openChat;
+  return {improve,card,parse};
+})();
+
+/* ---------- إضافة المحرر الذكية (محاكاة Word / Docs) ---------- */
+const AddinModule=(()=>{
+  const page=$('docPage');
+  const RULES=[
+    {re:/مهما\s+كانت|لا\s+يتحمل[^.\n]{0,40}مسؤولية|يُباع[^.\n]*بحالته|تُباع[^.\n]*بحالتها/,sev:'high',msg:'إعفاء مطلق من المسؤولية قد يُعدّ شرطاً باطلاً أو تعسفياً (الإذعان).'},
+    {re:/يتنازل[^.\n]{0,40}عن\s+(?:أي|كل)\s+حق|لا\s+يحق\s+للطرف\s+(?:الأول|الثاني)[^.\n]{0,30}إطلاقاً/,sev:'high',msg:'تنازل مسبق عن الحقوق أو حرمان مطلق من الحق.'},
+    {re:/دون\s+إبداء\s+(?:الأسباب|أسباب)|دون\s+(?:إنذار|إخطار)|في\s+أي\s+وقت[^.\n]{0,25}(?:تعديل|إنهاء)/,sev:'high',msg:'إنهاء أو تعديل منفرد دون إخطار؛ يخل بتوازن العقد.'},
+    {re:/(?:بالطريقة\s+التي\s+يراها|يحدده|يختاره|يقدره)\s+الطرف\s+(?:الأول|الثاني)/,sev:'high',msg:'ترك تحديد جوهري لإرادة طرف واحد (غرر).'},
+    {re:/(?:[5-9][0-9]|100)\s*%/,sev:'high',msg:'نسبة غرامة/شرط جزائي مرتفعة وقد تُخفَّض قضاءً.'},
+    {re:/مناسب[ةً]?|قريباً|في\s+أقرب\s+وقت|حسب\s+الاتفاق|متى\s+شاء|عند\s+الحاجة|شفهياً/,sev:'medium',msg:'لفظ مطاطي أو غير منضبط (مدة/مبلغ/آلية)؛ حدّده بدقة.'},
+    {re:/فلوس|الشغل|يقدر|مرة\s+ثانية|مقاول\s+ثاني|يعطيه|لازم|يخصم/,sev:'medium',msg:'صياغة عامية أو ركيكة؛ تحتاج ترقية قانونية.'}
+  ];
+  function lines(){ return page.innerText.split('\n').map(x=>x.trim()).filter(x=>x.length>6); }
+  let found=[];
+  function scan(){
+    found=[]; lines().forEach(l=>{ for(const r of RULES){ if(r.re.test(l)){ found.push({line:l,sev:r.sev,msg:r.msg}); break; } } });
+    $('monCount').textContent=found.length?'· '+found.length.toLocaleString('ar-SA')+' تنبيه':'';
+    $('monList').innerHTML=found.length?found.map((f,i)=>`<div class="alert-i ${f.sev}"><b>${f.sev==='high'?'🔴 بند خطير':'🟡 بند ركيك/غامض'}</b><q>${esc(f.line.slice(0,90))}${f.line.length>90?'…':''}</q>${f.msg}<div class="mt-2"><button type="button" class="btn-gold px-3 py-1.5 text-xs" data-i="${i}">مُحسِّن الصياغة 🖋️</button></div></div>`).join(''):'<div class="text-sm mt-4" style="color:#cbd8ea">✅ لا توجد بنود مثيرة للقلق حتى الآن. استمر بالكتابة…</div>';
+  }
+  let t; page.addEventListener('input',()=>{clearTimeout(t);t=setTimeout(scan,450);});
+  $('monList').addEventListener('click',async e=>{
+    const i=e.target.dataset.i; if(i===undefined) return; const f=found[+i]; const box=$('monImpr');
+    Dom.show('monImpr',true); box.innerHTML='<span class="dots"><span></span><span></span><span></span></span> جارٍ الترقية…';
+    const r=await DraftingImproverModule.improve(f.line); box.innerHTML=DraftingImproverModule.card(r,'adoptAddin');
+    box.scrollIntoView({behavior:'smooth',block:'nearest'});
+    $('adoptAddin').onclick=()=>{
+      const blk=[...page.querySelectorAll('div,p,li')].find(n=>n.textContent.trim()===f.line&&!n.querySelector('div,p'));
+      if(blk) blk.textContent=r.rewrite;
+      else page.innerText=page.innerText.replace(f.line,r.rewrite);
+      Dom.show('monImpr',false); scan(); toast('تم ترقية البند في المستند ✓');
+    };
+  });
+  document.querySelector('.doc-bar').addEventListener('click',e=>{
+    const c=e.target.closest('button')?.dataset.cmd; if(!c) return; page.focus();
+    if(c==='h') document.execCommand('formatBlock',false,'h2');
+    else if(c==='sample'){ page.innerHTML=SAMPLE.split('\n').map(l=>'<div>'+(esc(l)||'<br>')+'</div>').join(''); scan(); }
+    else document.execCommand(c);
+  });
+  page.innerHTML='<div>اكتب بنود عقدك هنا، أو اضغط «إدراج نص عقد تجريبي»…</div><div><br></div><div>مثال: إذا تأخر المقاول في تسليم الشغل عن الموعد، يحق لصاحب العمل يخصم عليه فلوس عن كل يوم تأخير.</div>';
+  return {scan};
+})();
+
+/* ---------- مكتبة النماذج: التعبئة الذكية بالخطوات / التعديل اليدوي ---------- */
+const TemplatesModule=(()=>{
+  let mode='stepper', occ=[], vals=[], step=0;
+  const GROUP1=/اسم|هوية|سجل|الطرف|المؤجر|المستأجر|الشريك|البائع|المشتري|عنوان|جوال|هاتف|بريد|تاريخ|مدينة|الاسم/;
+  function extract(text){
+    occ=[]; const re=/\[([^\]\n]{1,60})\]/g; let m;
+    while((m=re.exec(text))){ const ls=text.lastIndexOf('\n',m.index)+1; const ctx=text.slice(ls,m.index).replace(/[:：\s]+$/,'').trim().slice(-40); occ.push({start:m.index,len:m[0].length,label:(ctx?ctx+' — ':'')+m[1],g:GROUP1.test(ctx+' '+m[1])?1:2}); }
+    vals=occ.map(()=>'');
+  }
+  function build(){ let out='',p=0; const t=curTpl.text; occ.forEach((o,i)=>{out+=t.slice(p,o.start)+(vals[i]||t.slice(o.start,o.start+o.len)); p=o.start+o.len;}); return out+t.slice(p); }
+  function text(){ return mode==='stepper'?build():($('mText').textContent); }
+  function refresh(){ if(mode==='stepper') $('mText').textContent=build(); }
+  function render(){
+    const box=$('stepBox'), steps=['بيانات الأطراف','التفاصيل المالية والمدة','المعاينة'];
+    if(mode!=='stepper'){ Dom.show('stepBox',false); $('mText').contentEditable='plaintext-only'; $('mText').style.maxHeight=''; $('mText').textContent=curTpl.text; return; }
+    $('mText').contentEditable='false'; $('mText').style.maxHeight=step===2?'':'28vh';
+    Dom.show('stepBox',true);
+    const idx=occ.map((o,i)=>i).filter(i=>step===0?occ[i].g===1:step===1?occ[i].g===2:false);
+    const fields=step<2?(idx.length?idx.map(i=>`<div class="fld"><label>${esc(occ[i].label)}</label><input data-i="${i}" value="${esc(vals[i]).replace(/"/g,'&quot;')}"></div>`).join(''):'<div class="text-sm" style="color:#5d6a8a;padding:.6rem 0">لا حقول في هذه الخطوة، تابع للتالي.</div>'):'<div class="text-sm" style="color:#166534;padding:.4rem 0">✅ راجع النص النهائي بالأسفل ثم أرسله إلى مساحة التدقيق.</div>';
+    box.innerHTML=`<div class="stp">${steps.map((s,i)=>`<span class="${i===step?'on':''}">${i+1}. ${s}</span>`).join('')}</div>${occ.length?'':'<div class="text-sm" style="color:#5d6a8a">لا توجد حقول [ ] في هذا النموذج؛ استخدم التعديل اليدوي.</div>'}<div style="max-height:30vh;overflow:auto">${fields}</div>
+      <div class="flex justify-between mt-3"><button type="button" class="btn-ghost px-4 py-1.5 text-sm" data-nav="-1" ${step===0?'disabled style="opacity:.4"':''}>السابق</button><button type="button" class="btn-ghost px-4 py-1.5 text-sm" data-nav="1" ${step===2?'disabled style="opacity:.4"':''}>التالي</button></div>`;
+    refresh();
+  }
+  $('stepBox').addEventListener('input',e=>{ const i=e.target.dataset.i; if(i===undefined) return; vals[+i]=e.target.value; refresh(); });
+  $('stepBox').addEventListener('click',e=>{ const n=e.target.dataset.nav; if(n===undefined) return; step=Math.max(0,Math.min(2,step+(+n))); render(); });
+  $('tplMode').addEventListener('click',e=>{ const m=e.target.dataset.mode; if(!m) return; mode=m; step=0; [...$('tplMode').querySelectorAll('[data-mode]')].forEach(b=>b.classList.toggle('on',b.dataset.mode===m)); render(); });
+  function open(i){ curTpl=TPL[i]; $('mTitle').textContent=curTpl.title; $('tplModal').classList.remove('hidden'); extract(curTpl.text); step=0; render(); }
+  function send(){
+    const t=text(); closeTpl(); NavModule.go('home');
+    if(memoDone&&!busy){ resetChat(); welcome(); }
+    contractEl.value=t; updateCount(); setTimeout(()=>$('assistant').scrollIntoView({behavior:'smooth'}),50); toast('أُرسل العقد إلى مساحة التدقيق ✓');
+  }
+  /* ربط النافذة الأصلية */
+  openTpl=open;
+  $('mUse').textContent='🤖 أرسل إلى مساحة التدقيق';
+  $('mUse').onclick=send;
+  $('mCopy').onclick=async()=>{try{await navigator.clipboard.writeText(text());toast('تم نسخ النموذج ✓');}catch{toast('تعذّر النسخ');}};
+  $('mPrint').onclick=()=>{ const w=window.open('','_blank'); w.document.write('<html dir="rtl" lang="ar"><head><meta charset="utf-8"><title>'+curTpl.title+'</title><style>body{font-family:Tajawal,sans-serif;padding:40px;line-height:2.1;white-space:pre-wrap}</style></head><body>'+esc(text())+'</body></html>'); w.document.close(); w.focus(); w.print(); };
+  /* زر «دقّق» في البطاقة يمر بنفس المسار */
+  useTpl=function(i){ const t=TPL[i].text; closeTpl(); NavModule.go('home'); if(memoDone&&!busy){resetChat();welcome();} contractEl.value=t; updateCount(); setTimeout(()=>$('assistant').scrollIntoView({behavior:'smooth'}),50); toast('أُدرج النموذج في مساعد مُحكَم ✓'); };
+  return {send};
+})();
+
+/* ---------- لوحة التحكم: عقودي السابقة ---------- */
+const DashboardModule=(()=>{
+  const KEY='muhkam_dash_v1';
+  const SEED=[
+    {ref:'MHK-0001',title:'عقد توريد مواد بناء',date:'2026-09-14',score:42,risk:'high',flaws:['شرط جزائي مبالغ فيه','إنهاء منفرد دون إخطار'],memo:'## ملخص\nعقد توريد يتضمن شرطاً جزائياً مبالغاً فيه وإنهاءً منفرداً.\n\n- **خطورة عالية:** المادة (5) و(6).\n- **توصية:** تقييد الغرامة وإقرار حق الإنهاء المتبادل.'},
+    {ref:'MHK-0002',title:'عقد إيجار سكني',date:'2026-10-02',score:78,risk:'medium',flaws:['مدة الإخطار غير محددة','لفظ مطاطي'],memo:'## ملخص\nعقد إيجار سليم في مجمله مع غموض في مدة الإخطار.\n\n- **متوسطة:** تحديد مدة الإخطار بالفسخ.'},
+    {ref:'MHK-0003',title:'عقد عمل محدد المدة',date:'2026-11-05',score:91,risk:'low',flaws:['لفظ مطاطي'],memo:'## ملخص\nالعقد متوافق إلى حد كبير مع نظام العمل.\n\n- **منخفضة:** ضبط صياغة بند الإجازات.'}
+  ];
+  function load(){ try{ let d=JSON.parse(localStorage.getItem(KEY)||'null'); if(!Array.isArray(d)){ d=SEED; localStorage.setItem(KEY,JSON.stringify(d)); } return d; }catch{ return SEED.slice(); } }
+  function save(d){ try{localStorage.setItem(KEY,JSON.stringify(d));}catch{} }
+  function record(md){
+    const fl=Array.isArray(lastFlaws)?lastFlaws:[];
+    const hi=fl.filter(f=>f.severity==='high').length, me=fl.filter(f=>f.severity==='medium').length, te=fl.filter(f=>f.severity==='term').length;
+    const score=fl.length?Math.max(20,100-hi*15-me*8-te*3):70, risk=hi?'high':(me?'medium':'low');
+    const first=(baseContract.split('\n').map(x=>x.trim()).find(x=>x.length>3)||'عقد بدون عنوان').slice(0,60);
+    const d=load(); d.unshift({ref:'MHK-'+String(d.length+1).padStart(4,'0'),title:first,date:new Date().toISOString().slice(0,10),score,risk,flaws:fl.map(f=>f.title).filter(Boolean),memo:md}); save(d);
+  }
+  const RK={high:'عالٍ',medium:'متوسط',low:'منخفض'};
+  function render(){
+    const d=load(), cnt={}; d.forEach(x=>(x.flaws||[]).forEach(f=>cnt[f]=(cnt[f]||0)+1));
+    const top=Object.entries(cnt).sort((a,b)=>b[1]-a[1])[0];
+    const k=(t,v)=>`<div class="card stat"><div class="num" style="font-size:${String(v).length>8?'1.1rem':'2.3rem'}">${v}</div><div class="lbl">${t}</div></div>`;
+    $('kpis').innerHTML=k('إجمالي العقود المدققة',d.length.toLocaleString('ar-SA'))+k('العقود المعتمدة (امتثال ≥ 80%)',d.filter(x=>x.score>=80).length.toLocaleString('ar-SA'))+k('أكثر الثغرات شيوعاً',top?esc(top[0]):'—');
+    $('hist').innerHTML=d.length?d.map((x,i)=>`<tr><td>${esc(x.ref)}</td><td>${esc(x.title)}</td><td>${esc(x.date)}</td><td><b>${x.score}%</b></td><td><span class="rk rk-${x.risk}">${RK[x.risk]}</span></td><td><button class="btn-ghost px-3 py-1.5 text-xs" data-i="${i}">📋 استعراض المذكرة</button></td></tr>`).join(''):'<tr><td colspan="6" style="text-align:center;color:#5d6a8a">لا توجد عقود محفوظة.</td></tr>';
+  }
+  $('hist').addEventListener('click',e=>{ const i=e.target.dataset.i; if(i===undefined) return; const x=load()[+i]; $('mmTitle').textContent='📋 '+x.title+' · '+x.ref; $('mmBody').innerHTML=DOMPurify.sanitize(marked.parse(x.memo||'')); $('memoModal').classList.remove('hidden'); });
+  $('mmClose').onclick=()=>$('memoModal').classList.add('hidden');
+  $('memoModal').addEventListener('click',e=>{ if(e.target.id==='memoModal') $('memoModal').classList.add('hidden'); });
+  $('clearHist').onclick=()=>{ if(confirm('مسح كل سجل العقود؟')){ save([]); render(); } };
+  load();
+  return {render,record};
+})();
+/* ربط الحفظ التلقائي بعد كل مذكرة تدقيق */
+(()=>{ const _am=addMemo; addMemo=function(md){ _am(md); try{DashboardModule.record(md);}catch{} }; })();
 </script>
 </body>
 </html>
