@@ -137,6 +137,24 @@ body{background:linear-gradient(180deg,#263065 0%,#2c3d66 50%,#3c5d72 100%) fixe
 .dots{display:inline-flex;gap:4px;margin-inline-end:.5rem;vertical-align:middle}
 .dots span{width:7px;height:7px;border-radius:50%;background:#2f7a78;animation:pulse 1.2s ease-in-out infinite}
 .dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
+
+/* ===== تظليل الثغرات داخل العقد ===== */
+.contract-viewer{font-size:1.05rem;line-height:2.4;background:#fff;padding:16px;border-radius:12px;border:1px solid #E3E9F5;color:#1e293b;max-height:380px;overflow-y:auto;direction:rtl}
+.highlight{padding:2px 6px;border-radius:6px;font-weight:700;cursor:pointer;transition:all .2s ease;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.highlight.active{outline:2px solid #263065;outline-offset:1px}
+.highlight-high{background:#fee2e2;color:#991b1b;border-bottom:2px solid #ef4444}
+.highlight-high:hover{background:#fecaca}
+.highlight-medium{background:#fef3c7;color:#92400e;border-bottom:2px solid #f59e0b}
+.highlight-medium:hover{background:#fde68a}
+.highlight-term{background:#f3e8ff;color:#6b21a8;border-bottom:2px solid #a855f7}
+.highlight-term:hover{background:#e9d5ff}
+.hl-legend{display:flex;flex-wrap:wrap;gap:.5rem;font-size:.8rem;font-weight:700;margin:.6rem 0}
+.hl-legend span{padding:.15rem .6rem;border-radius:999px}
+.flaw-card{margin-top:.8rem;padding:.9rem 1rem;border-radius:14px;border:1px solid #E3E9F5;border-right-width:5px;background:#fafbff;line-height:1.9;font-size:.95rem}
+.flaw-card.sev-high{border-right-color:#ef4444}.flaw-card.sev-medium{border-right-color:#f59e0b}.flaw-card.sev-term{border-right-color:#a855f7}
+.flaw-card h4{font-weight:800;margin-bottom:.3rem}
+.flaw-card .lbl{font-weight:800;color:#2f7a78}
+.flaw-card .alt{margin-top:.5rem;padding:.6rem .8rem;background:#ecfdf5;border-radius:10px;border:1px dashed #1f9d74}
 </style>
 </head>
 
@@ -291,7 +309,7 @@ const roleEl=$('role'), contractEl=$('contract'), sendBtn=$('sendBtn'), msgs=$('
 const isTouch = matchMedia('(pointer:coarse)').matches;
 let busy=false, lastText='';
 /* حالة المحادثة: تُحفظ بين الرسائل ليتذكر المستشار العقد */
-let conversationId='', baseContract='', chatRole='', memoDone=false, lastReq=null;
+let conversationId='', baseContract='', chatRole='', memoDone=false, lastReq=null, lastFlaws=null;
 const USER_ID=(()=>{ try{ let u=localStorage.getItem('muhkam_uid'); if(!u){ u='u'+Math.random().toString(36).slice(2)+Date.now().toString(36); localStorage.setItem('muhkam_uid',u);} return u; }catch{ return 'u'+Math.random().toString(36).slice(2); } })();
 const FIRST_QUERY='قم بتدقيق العقد المرفق وإعداد المرئيات النظامية.';
 const SUGGESTIONS=['خفف الشرط الجزائي','أعد صياغة العقد كاملاً بعد التعديلات','ما أخطر ثغرة في العقد؟','اقترح بنداً يحمي مصلحتي'];
@@ -334,7 +352,7 @@ function showSuggest(on){
   box.style.display=on?'flex':'none';
 }
 function resetChat(){
-  conversationId=''; baseContract=''; chatRole=''; memoDone=false; lastReq=null; lastText='';
+  conversationId=''; baseContract=''; chatRole=''; memoDone=false; lastReq=null; lastText=''; lastFlaws=null;
   lockRole(false); showSuggest(false);
   contractEl.placeholder='الصق نص العقد هنا…';
 }
@@ -372,7 +390,7 @@ async function run(contract,query,isFirst){
     if(!data.answer) throw new Error(data.message||'لم تُرجع الخدمة إجابة.');
     if(data.conversation_id) conversationId=data.conversation_id;
     typing.remove();
-    if(isFirst){ addMemo(data.answer); memoDone=true; showSuggest(true); contractEl.placeholder='اسأل المستشار أو اطلب تعديلاً على العقد…'; }
+    if(isFirst){ lastFlaws=Array.isArray(data.flaws)?data.flaws.map(normFlaw).filter(f=>f.original_text):null; addMemo(data.answer); memoDone=true; showSuggest(true); contractEl.placeholder='اسأل المستشار أو اطلب تعديلاً على العقد…'; }
     else addAnswer(data.answer);
   }catch(e){
     typing.remove();
@@ -384,7 +402,7 @@ function addMemo(md){
   const date=new Date().toLocaleDateString('ar-EG',{year:'numeric',month:'long',day:'numeric'});
   addMsg('a',`<div class="memo-top">📋 مذكرة التدقيق القانوني <span>· ${chatRole||roleEl.value} · ${date}</span></div>
     <div class="prose-ar">${DOMPurify.sanitize(marked.parse(md))}</div>
-    <div class="flex flex-wrap gap-2 mt-3"><button class="chip" data-act="copy">📋 نسخ المذكرة</button><button class="chip" data-act="print">🖨️ طباعة / PDF</button></div>
+    <div class="flex flex-wrap gap-2 mt-3"><button class="chip" data-act="highlight">🖍️ عرض العقد مع التظليل</button><button class="chip" data-act="copy">📋 نسخ المذكرة</button><button class="chip" data-act="print">🖨️ طباعة / PDF</button></div>
     <div class="text-sm mt-3 opacity-80">💬 ناقش المستشار في الأسفل: اختر اقتراحاً سريعاً أو اكتب سؤالك.</div>`,'bub-memo');
 }
 function addAnswer(md){
@@ -404,6 +422,7 @@ msgs.addEventListener('click',async e=>{
   if(act==='sample'){ contractEl.value=SAMPLE; updateCount(); contractEl.focus(); toast('أُدرج العقد التجريبي، اضغط إرسال'); }
   if(act==='tpl'){ $('templates').scrollIntoView({behavior:'smooth'}); }
   if(act==='retry'&&!busy&&lastReq){ run(lastReq.contract,lastReq.query,lastReq.isFirst); }
+  if(act==='highlight'){ showHighlighted(e.target); return; }
   const memo=e.target.closest('.bub')?.querySelector('.prose-ar');
   if(act==='copy'&&memo){
     try{ await navigator.clipboard.writeText(memo.innerText); }catch{ const ta=document.createElement('textarea'); ta.value=memo.innerText; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); }
@@ -423,6 +442,140 @@ $('seg').addEventListener('click',e=>{
 });
 $('newChat').addEventListener('click',()=>{ if(!busy){ resetChat(); welcome(); contractEl.value=''; updateCount(); } });
 welcome();
+
+/* ===== تظليل الثغرات داخل العقد ===== */
+const SEV={
+  high:{cls:'highlight-high',label:'🔴 خطورة عالية / بند باطل'},
+  medium:{cls:'highlight-medium',label:'🟡 بند غامض أو يحتاج تعديل'},
+  term:{cls:'highlight-term',label:'🟣 التزام أو مدة جوهرية'}
+};
+const FLAWS_QUERY='أعد نتائج التدقيق السابق بصيغة JSON فقط، دون أي نص قبلها أو بعدها ودون علامات ```. المطلوب مصفوفة كائنات، لكل ثغرة: original_text (اقتباس حرفي مطابق تماماً لعبارة قصيرة من نص العقد)، severity (واحدة من: high للباطل أو الخطير، medium للغامض أو المحتاج تعديل، term للالتزامات والمدد الجوهرية)، title (عنوان مختصر)، explanation (الشرح)، legal_basis (السند النظامي)، suggested_text (الصياغة البديلة).';
+
+function sevKey(s){
+  s=String(s||'').toLowerCase();
+  if(/high|critical|عال|باطل|خطير|جسيم/.test(s)) return 'high';
+  if(/term|oblig|التزام|مدة|جوهر/.test(s)) return 'term';
+  return 'medium';
+}
+function normFlaw(f){
+  f=f||{};
+  return {
+    original_text:String(f.original_text||f.text||f.clause||'').trim(),
+    severity:sevKey(f.severity),
+    title:String(f.title||f.issue||f.problem||'').trim(),
+    explanation:String(f.explanation||f.reason||'').trim(),
+    legal_basis:String(f.legal_basis||f.basis||f.law||'').trim(),
+    suggested_text:String(f.suggested_text||f.alternative||f.replacement||'').trim()
+  };
+}
+function parseFlaws(answer){
+  let t=String(answer).replace(/```json|```/gi,'').trim();
+  const a=t.indexOf('['), b=t.lastIndexOf(']'), c=t.indexOf('{'), d=t.lastIndexOf('}');
+  let arr=null;
+  try{ if(a>=0&&b>a&&(c<0||a<c)) arr=JSON.parse(t.slice(a,b+1)); }catch{}
+  if(!arr){ try{ const o=JSON.parse(t.slice(c,d+1)); arr=o.flaws||o.issues||o.items; }catch{} }
+  return (Array.isArray(arr)?arr:[]).map(normFlaw).filter(f=>f.original_text);
+}
+
+/* تطبيع للمطابقة: يتجاهل التشكيل والتطويل وفروق الهمزات والمسافات، مع الاحتفاظ بمواضع النص الأصلي */
+function buildNorm(s){
+  let out='', map=[], sp=false;
+  for(let i=0;i<s.length;i++){
+    let ch=s[i];
+    if(/[\u064B-\u0652\u0640\u200B-\u200F]/.test(ch)) continue;
+    if(/\s/.test(ch)){ if(sp||!out) continue; ch=' '; sp=true; } else sp=false;
+    ch=ch.replace(/[أإآ]/,'ا').replace('ى','ي');
+    out+=ch; map.push(i);
+  }
+  return {out,map};
+}
+
+/* يرسم العقد مظللاً داخل viewerEl ويرجع فهارس الثغرات التي لم يُعثر على نصها */
+function renderHighlightedContract(contractText, detectedFlaws, viewerEl){
+  const N=buildNorm(contractText), ranges=[], unmatched=[];
+  /* الأطول أولاً لتفادي تداخل التظليل */
+  const order=detectedFlaws.map((_,i)=>i).sort((a,b)=>detectedFlaws[b].original_text.length-detectedFlaws[a].original_text.length);
+  order.forEach(i=>{
+    const p=buildNorm(detectedFlaws[i].original_text).out.trim();
+    if(p.length<4){ unmatched.push(i); return; }
+    let from=0, ok=false;
+    while(true){
+      const at=N.out.indexOf(p,from); if(at<0) break;
+      const s=N.map[at]; let e=N.map[at+p.length-1]+1; while(/[\u064B-\u0652]/.test(contractText[e]||'')) e++;
+      if(!ranges.some(r=>s<r.e&&e>r.s)){ ranges.push({s,e,i}); ok=true; break; }
+      from=at+1;
+    }
+    if(!ok) unmatched.push(i);
+  });
+  ranges.sort((a,b)=>a.s-b.s);
+  const part=t=>esc(t).replace(/\n/g,'<br>');
+  let html='', pos=0;
+  ranges.forEach(r=>{
+    html+=part(contractText.slice(pos,r.s));
+    html+=`<mark class="highlight ${SEV[detectedFlaws[r.i].severity].cls}" data-flaw-index="${r.i}" tabindex="0" role="button" title="اضغط لعرض التفاصيل القانونية والصياغة البديلة">${part(contractText.slice(r.s,r.e))}</mark>`;
+    pos=r.e;
+  });
+  viewerEl.innerHTML=html+part(contractText.slice(pos));
+  return unmatched.sort((a,b)=>a-b);
+}
+
+function showFlawDetails(flaws,i,detailEl){
+  const f=flaws[i], sv=SEV[f.severity];
+  detailEl.innerHTML=`<div class="flaw-card sev-${f.severity}">
+    <div class="text-xs font-bold mb-1">${sv.label}</div>
+    <h4>${esc(f.title||'ملاحظة قانونية')}</h4>
+    ${f.explanation?`<p>${esc(f.explanation)}</p>`:''}
+    ${f.legal_basis?`<p class="mt-2"><span class="lbl">⚖️ السند النظامي:</span> ${esc(f.legal_basis)}</p>`:''}
+    ${f.suggested_text?`<div class="alt"><span class="lbl">✍️ الصياغة البديلة:</span><br>${esc(f.suggested_text)}</div>
+      <button type="button" class="chip mt-2" data-copy="${i}">📋 نسخ الصياغة</button>`:''}
+  </div>`;
+  detailEl.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function mountHighlightView(contract,flaws){
+  const row=addMsg('a',`<div class="memo-top">🖍️ العقد مع تظليل الثغرات <span>· اضغط على أي نص ملوّن للتفاصيل</span></div>
+    <div class="hl-legend">${Object.values(SEV).map(s=>`<span class="${s.cls}">${s.label}</span>`).join('')}</div>
+    <div class="contract-viewer"></div><div class="hl-detail"></div><div class="hl-missing text-sm mt-2 opacity-80"></div>`,'bub-memo');
+  const viewer=row.querySelector('.contract-viewer'), detail=row.querySelector('.hl-detail');
+  const un=renderHighlightedContract(contract,flaws,viewer);
+  if(un.length) row.querySelector('.hl-missing').innerHTML='⚠️ ثغرات تعذّر تحديد موضعها في النص: '+un.map(i=>esc(flaws[i].title||flaws[i].original_text.slice(0,40))).join('، ');
+  const open=m=>{
+    viewer.querySelectorAll('.highlight.active').forEach(x=>x.classList.remove('active'));
+    m.classList.add('active'); showFlawDetails(flaws,+m.dataset.flawIndex,detail);
+  };
+  row.addEventListener('click',async e=>{
+    const m=e.target.closest('.highlight'); if(m) return open(m);
+    const c=e.target.closest('[data-copy]');
+    if(c){ try{ await navigator.clipboard.writeText(flaws[+c.dataset.copy].suggested_text); toast('تم نسخ الصياغة ✓'); }catch{ toast('تعذّر النسخ'); } }
+  });
+  row.addEventListener('keydown',e=>{ const m=e.target.closest('.highlight'); if(m&&(e.key==='Enter'||e.key===' ')){ e.preventDefault(); open(m); } });
+  const first=viewer.querySelector('.highlight'); if(first) first.scrollIntoView({block:'nearest'});
+}
+
+async function showHighlighted(btn){
+  if(busy||!baseContract) return;
+  let flaws=lastFlaws;
+  if(!flaws||!flaws.length){
+    btn.disabled=true; setBusy(true);
+    const typing=addMsg('a','<span class="dots"><span></span><span></span><span></span></span>جارٍ تحديد مواضع الثغرات…');
+    try{
+      const res=await fetch(PROXY_URL,{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({user_role:chatRole||roleEl.value,contract_text:baseContract,query:FLAWS_QUERY,conversation_id:conversationId,user_id:USER_ID})});
+      const data=await res.json().catch(()=>({}));
+      if(!res.ok||!data.answer) throw new Error(data.message||('تعذّر الاتصال بالخدمة (رمز '+res.status+')'));
+      if(data.conversation_id) conversationId=data.conversation_id;
+      flaws=Array.isArray(data.flaws)?data.flaws.map(normFlaw).filter(f=>f.original_text):parseFlaws(data.answer);
+      if(!flaws.length) throw new Error('تعذّر استخراج الثغرات بصيغة قابلة للتظليل، حاول مرة أخرى.');
+      lastFlaws=flaws;
+    }catch(err){
+      typing.remove(); btn.disabled=false; setBusy(false);
+      addMsg('a',`<span class="text-rose-600 font-bold">${esc(err.message||'حدث خطأ')}</span>`); return;
+    }
+    typing.remove(); setBusy(false);
+  }
+  btn.disabled=true;
+  mountHighlightView(baseContract,flaws);
+}
 
 /* ===== مكتبة النماذج ===== */
 const TPL = [
