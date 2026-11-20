@@ -394,6 +394,7 @@ header.glass{position:sticky}
       <textarea id="contract" rows="1" class="field leading-7" placeholder="الصق نص العقد هنا…"></textarea>
       <input type="file" id="fileIn" accept=".docx,.txt,.md,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document" class="hidden">
       <button id="attachBtn" type="button" class="btn-ghost send-btn" aria-label="إرفاق ملف" title="إرفاق عقد (Word أو نص)">📎</button>
+      <button id="readContractBtn" type="button" class="btn-ghost send-btn" aria-label="قراءة نص العقد" title="استمع إلى نص العقد">🔊</button>
       <button id="micBtn" type="button" class="btn-ghost send-btn" aria-label="إملاء صوتي" title="إملاء صوتي">🎙️</button>
       <button id="sendBtn" type="button" class="btn-main send-btn" aria-label="إرسال"><span id="sendIcon">➤</span></button>
     </div>
@@ -1406,7 +1407,8 @@ const SpeakModule=(()=>{
   function extractText(root){
     const clone=root.cloneNode(true);
     clone.querySelectorAll('button,script,style,.tts-player,[aria-hidden="true"]').forEach(n=>n.remove());
-    return (clone.innerText||clone.textContent||'')
+    const visibleText=(clone.innerText&&clone.innerText.trim())?clone.innerText:clone.textContent;
+    return (visibleText||'')
       .replace(/\u00a0/g,' ')
       .replace(/[ \t]+\n/g,'\n')
       .replace(/\n[ \t]+/g,'\n')
@@ -1436,6 +1438,7 @@ const SpeakModule=(()=>{
     generation++;
     if(active){
       active.cancelled=true;
+      if(active.controller) active.controller.abort();
       if(active.audio){active.audio.pause();active.audio.removeAttribute('src');active.audio.load();}
       revoke(active.current);
       active.urls.forEach(x=>revoke(x));
@@ -1544,31 +1547,56 @@ const SpeakModule=(()=>{
   return {toggle,stop:stopCurrent,extractText};
 })();
 
+// قراءة نص العقد الملصق في صندوق التحرير مباشرة، لا نص إجابة المساعد فقط.
+$('readContractBtn').addEventListener('click',()=>{
+  const text=String(contractEl.value||'').trim();
+  if(!text){toast('الصق نص العقد أولاً ثم اضغط زر القراءة.');return;}
+  SpeakModule.toggle(text,$('readContractBtn'));
+});
+
 const MicModule=(()=>{
-  let rec=null, chunks=[], stream=null, timer=null;
-  async function toggle(btn,onText){
-    if(rec&&rec.state==='recording'){ rec.stop(); return; }
-    if(!navigator.mediaDevices?.getUserMedia||typeof MediaRecorder==='undefined'){ toast('المتصفح لا يدعم التسجيل الصوتي'); return; }
-    try{ stream=await navigator.mediaDevices.getUserMedia({audio:true}); }catch{ toast('اسمح للموقع باستخدام الميكروفون'); return; }
-    const mime=MediaRecorder.isTypeSupported('audio/webm')?'audio/webm':(MediaRecorder.isTypeSupported('audio/mp4')?'audio/mp4':'');
-    rec=new MediaRecorder(stream,mime?{mimeType:mime}:undefined); chunks=[];
-    rec.ondataavailable=e=>{ if(e.data.size) chunks.push(e.data); };
-    rec.onstop=async()=>{
-      clearTimeout(timer); stream.getTracks().forEach(t=>t.stop()); btn.classList.remove('rec');
-      const type=rec.mimeType||mime||'audio/webm', blob=new Blob(chunks,{type});
-      if(blob.size<1500){ btn.textContent='🎙️'; toast('لم يُسجَّل صوت'); return; }
-      btn.textContent='⏳'; btn.disabled=true;
-      try{
-        const fd=new FormData(); fd.append('file',blob,'rec.'+(type.includes('mp4')?'mp4':'webm')); fd.append('user_id',USER_ID);
-        const r=await fetch(PROXY_URL.replace(/\/$/,'')+'/stt',{method:'POST',body:fd});
-        const d=await r.json().catch(()=>({}));
-        if(!r.ok||!d.text) throw new Error(d.message||'تعذّر التعرف على الصوت');
-        onText(d.text.trim());
-      }catch(err){ toast(err.message); }
-      finally{ btn.disabled=false; btn.textContent='🎙️'; }
+  let recognition=null, activeButton=null, finalText='';
+  const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
+  function toggle(btn,onText){
+    if(!SpeechRecognition){
+      toast('الإملاء الصوتي غير مدعوم في هذا المتصفح. جرّب متصفحاً يدعم التعرف الصوتي أو أرسل لنا واجهة خدمة STT المخصصة.');
+      return;
+    }
+    if(recognition&&activeButton===btn){
+      recognition.stop();
+      return;
+    }
+    if(recognition){ try{recognition.stop();}catch{} }
+    finalText=''; activeButton=btn;
+    const rec=new SpeechRecognition(); recognition=rec;
+    rec.lang='ar-SA'; rec.continuous=true; rec.interimResults=true;
+    btn.classList.add('rec'); btn.textContent='⏹';
+    toast('جارٍ الاستماع… اضغط ⏹ عند الانتهاء');
+    rec.onresult=e=>{
+      let interim='';
+      for(let i=e.resultIndex;i<e.results.length;i++){
+        const piece=e.results[i][0]?.transcript||'';
+        if(e.results[i].isFinal) finalText+=(finalText?' ':'')+piece.trim();
+        else interim+=piece;
+      }
+      btn.title=interim?'جارٍ التعرف: '+interim:'اضغط لإيقاف الإملاء';
     };
-    rec.start(); btn.classList.add('rec'); btn.textContent='⏹'; toast('جارٍ التسجيل… اضغط ⏹ للإنهاء');
-    timer=setTimeout(()=>{ if(rec.state==='recording') rec.stop(); },60000);
+    rec.onerror=e=>{
+      const messages={ 'not-allowed':'اسمح للمتصفح باستخدام الميكروفون.','audio-capture':'تعذّر الوصول إلى الميكروفون.','network':'تعذّر الاتصال بخدمة التعرف الصوتي.','no-speech':'لم يُلتقط كلام واضح.' };
+      toast(messages[e.error]||'تعذّر التعرف على الصوت: '+e.error);
+    };
+    rec.onend=()=>{
+      if(recognition!==rec)return;
+      recognition=null; activeButton=null;
+      btn.classList.remove('rec'); btn.textContent='🎙️'; btn.title='إملاء صوتي';
+      const result=finalText.trim();
+      if(result) onText(result);
+      else toast('لم يتم التعرف على كلام. حاول مرة أخرى.');
+    };
+    try{rec.start();}catch(err){
+      recognition=null;activeButton=null;btn.classList.remove('rec');btn.textContent='🎙️';
+      toast('تعذّر بدء الإملاء الصوتي. '+(err.message||''));
+    }
   }
   $('micBtn').onclick=()=>{ if(!busy) toggle($('micBtn'),t=>{ contractEl.value=(contractEl.value?contractEl.value+' ':'')+t; updateCount(); contractEl.focus(); }); };
   $('hbMic').onclick=()=>toggle($('hbMic'),t=>{ $('hbIn').value=($('hbIn').value?$('hbIn').value+' ':'')+t; $('hbIn').focus(); });
