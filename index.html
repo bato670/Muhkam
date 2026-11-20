@@ -307,7 +307,7 @@ header.glass{position:sticky}
   </p>
   <div class="mt-8 flex flex-wrap justify-start gap-3">
     <a href="#templates" class="btn-ghost px-6 py-3.5 text-base"> تصفّح نماذج العقود</a>
-    <a href="#assistant" class="btn-main px-6 py-3.5 text-base">🤖 جرّب مساعد مُحكَم</a>
+    <a href="#assistant" class="btn-main px-6 py-3.5 text-base">جرّب مساعد مُحكَم</a>
   </div>
 </section>
 
@@ -452,7 +452,7 @@ header.glass{position:sticky}
 </div>
 
 <div class="gfoot no-print"><div class="in">
-<div><h4>عن مُحكَم</h4>منصة قانونية تقنية لصياغة العقود وتدقيقها وفق الأنظمة السعودية. نموذج تجريبي لأغراض العرض، وليست منصة حكومية رسمية.</div>
+<div><h4>عن مُحكَم</h4>منصة قانونية تقنية تعنى بصياغة العقود وتدقيقها وفق الأنظمة السعودية، تجمع بين مكتبة نماذج جاهزة ومساعد ذكي يكشف الثغرات ويقترح الصياغات المحكمة.</div>
 <div><h4>روابط سريعة</h4><button data-go="home" data-anchor="features">مزايا مُحكَم</button><button data-go="home" data-anchor="how">كيف يعمل</button><button data-go="home" data-anchor="goals">أهداف مُحكَم</button><button data-go="home" data-anchor="templates">نماذج العقود</button><button data-go="dash">عقودي السابقة</button></div>
 <div><h4>الخدمات</h4><button data-go="home" data-anchor="assistant">مساعد التدقيق</button><button data-go="addin">إضافة المحرر الذكية</button><button data-go="home" data-anchor="faq">الأسئلة الشائعة</button></div>
 </div><div class="legal">تنبيه: المخرجات استرشادية ولا تُعدّ استشارة قانونية · مُحكم | Muhkam</div></div>
@@ -631,15 +631,15 @@ async function run(contract,query,isFirst){
     const res=await fetch(PROXY_URL,{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({user_role:chatRole||roleEl.value,contract_text:contract,query,conversation_id:conversationId,user_id:USER_ID,want_flaws:!!isFirst})});
     const data=await res.json().catch(()=>({}));
-    if(!res.ok) throw new Error(data.message||('تعذّر الاتصال بالخدمة (رمز '+res.status+')'));
-    if(!data.answer) throw new Error(data.message||'لم تُرجع الخدمة إجابة.');
+    if(!res.ok) throw new Error(friendlyErr(res,data.message||('تعذّر الاتصال بالخدمة (رمز '+res.status+')')));
+    if(!data.answer) throw new Error(friendlyErr(res,data.message||'لم تُرجع الخدمة إجابة.'));
     if(data.conversation_id) conversationId=data.conversation_id;
     typing.remove();
     if(isFirst){ lastFlaws=Array.isArray(data.flaws)?data.flaws.map(normFlaw).filter(f=>f.original_text):null; addMemo(data.answer); memoDone=true; showSuggest(true); contractEl.placeholder='اسأل المستشار أو اطلب تعديلاً على العقد…'; }
     else addAnswer(data.answer);
   }catch(e){
     typing.remove();
-    addMsg('a',`<span class="text-rose-600 font-bold">${esc(e.message||'حدث خطأ غير متوقع')}</span><div class="mt-2"><button class="chip" data-act="retry">↻ إعادة المحاولة</button></div>`);
+    addMsg('a',`<span class="text-rose-600 font-bold">${esc(e instanceof TypeError?'تعذّر الاتصال بالخدمة، تحقق من الإنترنت وأعد المحاولة.':(e.message||'حدث خطأ غير متوقع'))}</span><div class="mt-2"><button class="chip" data-act="retry">↻ إعادة المحاولة</button></div>`);
   }finally{ setBusy(false); contractEl.focus(); }
 }
 
@@ -703,15 +703,22 @@ function sevKey(s){
   if(/term|oblig|التزام|مدة|جوهر/.test(s)) return 'term';
   return 'medium';
 }
+function cleanField(x,max,drop){
+  let t=String(x||'').replace(/\*\*|__/g,'').replace(/^#+\s*/gm,'').trim();
+  const m=t.search(/\n\s*[\d.#*\-]*\s*(?:مواطن\s+التحسين|الأساس\s+النظامي|مذكرة\s+التدقيق)/);
+  if(m>0) t=t.slice(0,m).trim();
+  if(t.length>max){ if(drop) return ''; t=t.slice(0,max).replace(/\s+\S*$/,'')+'…'; }
+  return t;
+}
 function normFlaw(f){
   f=f||{};
   return {
-    original_text:String(f.original_text||f.text||f.clause||'').trim(),
+    original_text:cleanField(f.original_text||f.text||f.clause||'',500,true),
     severity:sevKey(f.severity),
-    title:String(f.title||f.issue||f.problem||'').trim(),
-    explanation:String(f.explanation||f.reason||'').trim(),
-    legal_basis:String(f.legal_basis||f.basis||f.law||'').trim(),
-    suggested_text:String(f.suggested_text||f.alternative||f.replacement||'').trim()
+    title:cleanField(f.title||f.issue||f.problem||'',120,false),
+    explanation:cleanField(f.explanation||f.reason||'',700,false),
+    legal_basis:cleanField(f.legal_basis||f.basis||f.law||'',400,false),
+    suggested_text:cleanField(f.suggested_text||f.alternative||f.replacement||'',1000,true)
   };
 }
 function parseFlaws(answer){
@@ -808,14 +815,14 @@ async function showHighlighted(btn){
       const res=await fetch(PROXY_URL,{method:'POST',headers:{'Content-Type':'application/json'},
         body:JSON.stringify({user_role:chatRole||roleEl.value,contract_text:baseContract,query:FLAWS_QUERY,conversation_id:conversationId,user_id:USER_ID})});
       const data=await res.json().catch(()=>({}));
-      if(!res.ok||!data.answer) throw new Error(data.message||('تعذّر الاتصال بالخدمة (رمز '+res.status+')'));
+      if(!res.ok||!data.answer) throw new Error(friendlyErr(res,data.message||('تعذّر الاتصال بالخدمة (رمز '+res.status+')')));
       if(data.conversation_id) conversationId=data.conversation_id;
       flaws=Array.isArray(data.flaws)?data.flaws.map(normFlaw).filter(f=>f.original_text):parseFlaws(data.answer);
       if(!flaws.length) throw new Error('تعذّر استخراج الثغرات بصيغة قابلة للتظليل، حاول مرة أخرى.');
       lastFlaws=flaws;
     }catch(err){
       typing.remove(); btn.disabled=false; setBusy(false);
-      addMsg('a',`<span class="text-rose-600 font-bold">${esc(err.message||'حدث خطأ')}</span>`); return;
+      addMsg('a',`<span class="text-rose-600 font-bold">${esc(err instanceof TypeError?'تعذّر الاتصال بالخدمة، تحقق من الإنترنت وأعد المحاولة.':(err.message||'حدث خطأ'))}</span>`); return;
     }
     typing.remove(); setBusy(false);
   }
@@ -1046,6 +1053,7 @@ renderTpl();
 const SAUDI_DRAFTING_SYSTEM_PROMPT = `أنت مستشار قانوني سعودي ضليع، وصائغ تشريعي رفيع البيان، متمرس في الصياغة العقدية والنظامية المستمدة من أمهات الكتب الفقهية، وتسبيبات الأحكام القضائية في المحاكم السعودية، ومرئيات هيئة الخبراء بمجلس الوزراء، وأحكام نظام المعاملات المدنية والأنظمة السعودية ذات الصلة.
 المهمة: إعادة صياغة النص أو البند المدخل (الركيك أو العامي أو الغامض أو المترجم حرفياً) بلغة قانونية سعودية رصينة جزلة قاطعة الدلالة تمنع التأويل وتدرأ النزاع.
 القواعد: (1) الرصانة والجزالة القضائية: حيث إنه من المقرر شرعاً ونظاماً، وتأسيساً على ما تقدم، وإعمالاً لقاعدة أن العقد شريعة المتعاقدين، وبما لا يخل بالنظام العام وحسن النية. (2) القطعية: استبدل الألفاظ الاحتمالية بأفعال الإلزام (يلتزم، يتعهد، ينحصر، يسقط حقه، يُعدّ إخلالاً جوهرياً، ينفسخ تلقائياً)، وانضبط بالمدد والمبالغ والأماكن وتجنب الألفاظ المطاطة (قريباً، مبلغ مناسب، حسب الاتفاق) واستبدلها بصيغ منضبطة مثل: خلال مدة أقصاها [عدد] أيام عمل بموجب إشعار خطي موثق. (3) التأصيل: استخدم مصطلحات نظام المعاملات المدنية (الإيجاب والقبول، القوة القاهرة، الظروف الطارئة، التعويض الاتفاقي، الفسخ، الإقالة، الضمان، الغرر، الإذعان، التضامن) واستحضر القواعد الفقهية (لا ضرر ولا ضرار، الغرم بالغنم، العبرة في العقود للمقاصد والمعاني). (4) تجنب الحشو، واربط الجمل بأدوات نظامية (شريطة أن، ما لم، على أن، مع عدم الإخلال بـ).
+(5) الأمانة للنص: صُغ بنداً واحداً بنفس موضوع النص ومضمونه تماماً، دون إضافة غرامات أو نسب أو شروط أو التزامات أو حالات فسخ لم ترد فيه، ودون حيثيات أو تسبيب داخل القسم الأول. وإن كان النص سليماً فأعده كما هو مع ضبط الألفاظ فقط، وإن كان ناقصاً فاستعمل أقواساً مثل ([المدة]) ولا تخترع أرقاماً. (6) يجب أن يصلح الناتج للاستبدال المباشر مكان النص الأصلي.
 الرد في ثلاثة أقسام فقط دون مقدمات، بهذه العناوين بالضبط:
 1. الصياغة القانونية المحكمة:
 2. مواطن التحسين والضبط الصياغي: (نقاط موجزة)
@@ -1161,38 +1169,44 @@ const BalanceModule=(()=>{
 })();
 
 /* ---------- مُحسِّن الصياغة ---------- */
+const BUSY_MSG='الخدمة مشغولة حالياً، يرجى المحاولة بعد قليل.';
+function friendlyErr(res,msg){
+  const m=String(msg||'');
+  if((res&&(res.status===429||res.status>=500))||/quota|limit|token|rate|exceed|insufficient|طاقة|حصة|الحد|انتهت|رصيد/i.test(m)) return BUSY_MSG;
+  return m;
+}
 const DraftingImproverModule=(()=>{
-  const LOCAL=[[/فلوس/g,'مبالغ مالية'],[/الشغل/g,'الأعمال'],[/يخصم عليه/g,'يحسم من مستحقاته'],[/يقدر/g,'جاز له'],[/يعطيه لمقاول ثاني/g,'إسناده إلى مقاول آخر على حساب المقاول المخل'],[/مقاول ثاني/g,'مقاول آخر'],[/في أقرب وقت/g,'خلال مدة أقصاها ([عدد]) أيام عمل'],[/قريباً/g,'خلال مدة أقصاها ([عدد]) أيام عمل'],[/مبلغ مناسب/g,'مبلغ مقطوع قدره ([المبلغ]) ريالاً سعودياً'],[/حسب الاتفاق/g,'وفقاً لما يُتفق عليه كتابةً بين الطرفين'],[/لازم/g,'يجب'],[/يلغي العقد/g,'فسخ العقد']];
-  const DEMO={
-    rewrite:'في حال إخلال الطرف الثاني (المقاول) بالتزامه الزمني وتأخره في إنجاز الأعمال وتسليمها في الموعد المحدد عقداً، استحق الطرف الأول (صاحب العمل) — دون حاجة إلى إنذار أو إثبات ضرر — حسم غرامة تأخير بواقع ([النسبة]%) من قيمة العقد الإجمالية عن كل يوم تأخير، وبما لا يتجاوز ([الحد الأقصى]%) من إجمالي قيمة العقد. وفي حال تجاوزت مدة التأخير ([عدد] يوماً) متصلة أو منفصلة، جاز للطرف الأول فسخ العقد فوراً وسحب الأعمال وتنفيذها على حساب الطرف الثاني، مع احتفاظ الطرف الأول بحقه في المطالبة بالتعويض عن كافة الأضرار المترتبة على ذلك.',
-    notes:['إزالة العامية (فلوس، شغل، يقدر) واعتماد مصطلحات الأطراف.','تقييد الغرامة بنسبة يومية وسقف أعلى منعاً للغرر والمبالغة.','ضبط المدة التي يتحول بعدها التأخير إلى سبب للفسخ.','النص على التنفيذ على حساب المقاول مع حفظ حق التعويض.'],
-    basis:'مقتضى «العقد شريعة المتعاقدين»، وأحكام التعويض الاتفاقي والفسخ في نظام المعاملات المدنية، وقاعدة «لا ضرر ولا ضرار».'
-  };
   function parse(ans){
-    const s=String(ans||''); const i2=s.search(/مواطن\s+التحسين/), i3=s.search(/الأساس\s+النظامي/);
+    const s=String(ans||'').replace(/\*\*|__/g,''); const i2=s.search(/مواطن\s+التحسين/), i3=s.search(/الأساس\s+النظامي/);
     const clean=x=>x.replace(/^[\s\d.\-*#:«»]+/,'').trim();
     const head=(i2>0?s.slice(0,i2):s).replace(/^\s*(?:#+\s*|\*+\s*)?1?\.?\s*\**\s*الصياغة\s+القانونية\s+المحكمة[^\n]*\n?/,'').replace(/\n[\s\d.#*]*$/,'');
     const notes=i2>=0?(s.slice(i2,i3>i2?i3:undefined).split('\n').slice(1).map(l=>l.replace(/^[\s\-*•]+/,'').trim()).filter(Boolean)):[];
     const basis=i3>=0?clean(s.slice(i3).split('\n').slice(1).join(' ')):'';
     return {rewrite:clean(head)||s.trim(),notes,basis};
   }
+  /* يتحقق أن الناتج بند واحد صالح للاستبدال وليس دراسة كاملة */
+  function valid(p,src){
+    const r=(p.rewrite||'').trim();
+    if(!r) return false;
+    if(/مواطن\s+التحسين|الأساس\s+النظامي|مذكرة\s+التدقيق|^\s*#/m.test(r)) return false;
+    if(r.length>Math.max(src.length*3,src.length+500)||r.length>1500) return false;
+    return true;
+  }
   async function improve(text){
     try{
-      if(PROXY_URL.includes('ضع-رابط')) throw 0;
       const r=await fetch(PROXY_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user_role:'الطرف الأول',contract_text:text,query:SAUDI_DRAFTING_SYSTEM_PROMPT+'\n\nالنص المطلوب تحسينه:\n'+text,conversation_id:'',user_id:USER_ID,want_flaws:false})});
-      const d=await r.json(); if(!r.ok||!d.answer) throw 0;
-      return {...parse(d.answer),local:false};
-    }catch{
-      if(/المقاول/.test(text)&&/تأخر/.test(text)) return {...DEMO,local:true};
-      let o=text; LOCAL.forEach(([a,b])=>o=o.replace(a,b));
-      return {rewrite:o,notes:['استبدال الألفاظ العامية والمطاطة بصيغ منضبطة.','تعذّر الاتصال بالنموذج الذكي؛ هذه نسخة تجريبية محلية محدودة.'],basis:'يُراجع النص النهائي مع مختص.',local:true};
-    }
+      const d=await r.json().catch(()=>({}));
+      if(!r.ok||!d.answer) return {error:true};
+      const p=parse(d.answer);
+      if(!valid(p,text)) return {error:true};
+      return {...p,error:false};
+    }catch{ return {error:true}; }
   }
   function card(r,adoptId){
+    if(r.error) return `<div class="text-sm" style="line-height:1.9">⏳ تعذّر تحسين الصياغة الآن. ${BUSY_MSG}</div>`;
     return `<div class="font-extrabold mb-1">✍️ الصياغة القانونية المحكمة</div><div class="impr-res">${esc(r.rewrite)}</div>
       <div class="font-extrabold mt-3 mb-1">🔧 مواطن التحسين والضبط الصياغي</div><ul class="text-sm" style="list-style:disc;margin-right:1.2rem;line-height:1.9">${(r.notes.length?r.notes:['تم ضبط الصياغة.']).map(n=>'<li>'+esc(n)+'</li>').join('')}</ul>
       ${r.basis?'<div class="text-sm mt-2"><b>📖 الأساس:</b> '+esc(r.basis)+'</div>':''}
-      ${r.local?'<div class="text-xs mt-2" style="color:#92400e">⚠️ وضع تجريبي محلي (النموذج الذكي غير متاح الآن).</div>':''}
       <div class="mt-3 flex gap-2"><button type="button" class="btn-main px-4 py-2 text-sm" id="${adoptId}">✅ اعتماد الصياغة في العقد</button></div>`;
   }
   let sel=null;
@@ -1203,7 +1217,8 @@ const DraftingImproverModule=(()=>{
     sel=s; const p=$('imprPanel'); Dom.show('imprPanel',true);
     p.innerHTML='<span class="dots"><span></span><span></span><span></span></span> جارٍ تحسين الصياغة…';
     const r=await improve(text); p.innerHTML=card(r,'adoptChat');
-    $('adoptChat').onclick=()=>{
+    const ad=$('adoptChat'); if(!ad) return;
+    ad.onclick=()=>{
       if(sel){ contractEl.value=contractEl.value.slice(0,sel.s)+r.rewrite+contractEl.value.slice(sel.e); } else contractEl.value=r.rewrite;
       updateCount(); Dom.show('imprPanel',false); toast('تم اعتماد الصياغة في العقد ✓');
     };
@@ -1232,15 +1247,21 @@ const AddinModule=(()=>{
     $('monList').innerHTML=found.length?found.map((f,i)=>`<div class="alert-i ${f.sev}"><b>${f.sev==='high'?'🔴 بند خطير':'🟡 بند ركيك/غامض'}</b><q>${esc(f.line.slice(0,90))}${f.line.length>90?'…':''}</q>${f.msg}<div class="mt-2"><button type="button" class="btn-gold px-3 py-1.5 text-xs" data-i="${i}">مُحسِّن الصياغة 🖋️</button></div></div>`).join(''):'<div class="text-sm mt-4" style="color:#cbd8ea">✅ لا توجد بنود مثيرة للقلق حتى الآن. استمر بالكتابة…</div>';
   }
   let t; page.addEventListener('input',()=>{clearTimeout(t);t=setTimeout(scan,450);});
+  function replaceInPage(oldTxt,newTxt){
+    const blk=[...page.querySelectorAll('div,p,li')].find(n=>n.textContent.trim()===oldTxt&&!n.querySelector('div,p,li'));
+    if(blk){ blk.textContent=newTxt; return true; }
+    const w=document.createTreeWalker(page,NodeFilter.SHOW_TEXT); let n;
+    while((n=w.nextNode())){ const i=n.data.indexOf(oldTxt); if(i>=0){ n.data=n.data.slice(0,i)+newTxt+n.data.slice(i+oldTxt.length); return true; } }
+    return false;
+  }
   $('monList').addEventListener('click',async e=>{
     const i=e.target.dataset.i; if(i===undefined) return; const f=found[+i]; const box=$('monImpr');
     Dom.show('monImpr',true); box.innerHTML='<span class="dots"><span></span><span></span><span></span></span> جارٍ الترقية…';
     const r=await DraftingImproverModule.improve(f.line); box.innerHTML=DraftingImproverModule.card(r,'adoptAddin');
     box.scrollIntoView({behavior:'smooth',block:'nearest'});
-    $('adoptAddin').onclick=()=>{
-      const blk=[...page.querySelectorAll('div,p,li')].find(n=>n.textContent.trim()===f.line&&!n.querySelector('div,p'));
-      if(blk) blk.textContent=r.rewrite;
-      else page.innerText=page.innerText.replace(f.line,r.rewrite);
+    const ad=$('adoptAddin'); if(!ad) return;
+    ad.onclick=()=>{
+      if(!replaceInPage(f.line,r.rewrite)){ toast('تعذّر تحديد البند في المستند، حدّده يدوياً'); return; }
       Dom.show('monImpr',false); scan(); toast('تم ترقية البند في المستند ✓');
     };
   });
@@ -1376,7 +1397,7 @@ const DashboardModule=(()=>{
    {k:['ملف','docx','رفع','ارفاق','pdf'],a:'يمكن إرفاق ملفات Word (.docx) أو النص (.txt) من زر الإرفاق في المساعد، بحد أقصى 30 ألف حرف للعقد.',g:[['افتح المساعد','assistant']]},
    {k:['محامي','استشار','بديل'],a:'مُحكَم أداة مساندة للمراجعة الأولية ولا يغني عن المحامي المرخّص؛ راجع المذكرة معه قبل التوقيع.'},
    {k:['انظمه','نظام','لوائح','قوانين'],a:'يستند التدقيق إلى الأنظمة السعودية ذات الصلة بالعقود، ومنها المعاملات المدنية والعمل والشركات والإثبات وحماية البيانات الشخصية.',g:[['الأنظمة المغطاة','home','coverage']]},
-   {k:['سعر','مجان','اشتراك','تكلفه'],a:'هذه نسخة تجريبية لأغراض العرض، ولم تُحدَّد فيها خطط أو أسعار بعد.'},
+   {k:['سعر','مجان','اشتراك','تكلفه'],a:'لم تُحدَّد خطط أو أسعار حالياً، وسيُعلن عنها عند توفرها.'},
    {k:['سجل','عقودي','سابق'],a:'تُحفظ العقود التي دققتها في سجل محلي على جهازك مع مؤشرات الامتثال والمخاطر.',g:[['عقودي السابقة','dash']]},
    {k:['مرحبا','السلام','اهلا','هلا'],a:'أهلاً بك! أنا الروبوت التعريفي لمُحكَم. اسألني عن المزايا أو طريقة الاستخدام أو حماية البيانات.'}
   ];
