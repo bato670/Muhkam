@@ -12,6 +12,7 @@
 
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js"></script>
 
 <style>
@@ -237,6 +238,8 @@ body{background:linear-gradient(180deg,#263065 0%,#2c3d66 50%,#3c5d72 100%) fixe
     <!-- صندوق الكتابة -->
     <div class="composer">
       <textarea id="contract" rows="1" class="field leading-7" placeholder="الصق نص العقد هنا…"></textarea>
+      <input type="file" id="fileIn" accept=".docx,.txt,.md,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document" class="hidden">
+      <button id="attachBtn" type="button" class="btn-ghost send-btn" aria-label="إرفاق ملف" title="إرفاق عقد (Word أو نص)">📎</button>
       <button id="sendBtn" type="button" class="btn-main send-btn" aria-label="إرسال"><span id="sendIcon">➤</span></button>
     </div>
     <div class="px-4 pb-3 pt-0 text-[11px] text-[var(--muted)] flex justify-between gap-3">
@@ -320,6 +323,34 @@ function updateCount(){ $('count').textContent=contractEl.value.length.toLocaleS
 contractEl.addEventListener('input',updateCount);
 contractEl.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey&&!isTouch){ e.preventDefault(); send(); } });
 sendBtn.addEventListener('click',send);
+/* ===== إرفاق ملف (Word / نص) ===== */
+const MAX_CHARS=30000;
+$('attachBtn').addEventListener('click',()=>{ if(!busy) $('fileIn').click(); });
+$('fileIn').addEventListener('change',async e=>{
+  const f=e.target.files[0]; e.target.value=''; if(!f||busy) return;
+  const name=f.name.toLowerCase();
+  if(f.size>8*1024*1024){ toast('الملف كبير (الحد 8 ميغابايت)'); return; }
+  try{
+    let text='';
+    if(name.endsWith('.docx')){
+      if(typeof mammoth==='undefined') throw new Error('تعذّر تحميل قارئ Word، تأكد من الاتصال بالإنترنت');
+      text=(await mammoth.extractRawText({arrayBuffer:await f.arrayBuffer()})).value;
+    }else if(name.endsWith('.txt')||name.endsWith('.md')){
+      text=await f.text();
+    }else if(name.endsWith('.doc')){
+      throw new Error('صيغة .doc القديمة غير مدعومة، احفظ الملف بصيغة .docx ثم أعد المحاولة');
+    }else{
+      throw new Error('الصيغ المدعومة: Word (.docx) والنص (.txt)');
+    }
+    text=text.replace(/\r\n?/g,'\n').replace(/\n{3,}/g,'\n\n').trim();
+    if(!text) throw new Error('لم أجد نصاً داخل الملف');
+    if(text.length>MAX_CHARS){ text=text.slice(0,MAX_CHARS); toast('تم اقتصاص العقد إلى '+MAX_CHARS.toLocaleString('ar-SA')+' حرف (حد الخدمة)'); }
+    else toast('تم إدراج «'+f.name+'» ✓ اضغط إرسال');
+    if(memoDone){ resetChat(); welcome(); }
+    contractEl.value=text; updateCount(); contractEl.focus();
+  }catch(err){ toast(err.message||'تعذّرت قراءة الملف'); }
+});
+
 
 function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); }
 const down=()=>msgs.scrollTo({top:msgs.scrollHeight});
