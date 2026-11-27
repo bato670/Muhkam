@@ -515,6 +515,14 @@ html.intro-skip #intro{display:none}
 @keyframes iFade{to{opacity:1}}
 @media (prefers-reduced-motion:reduce){#intro .lg,#intro p,#intro .bs img{animation:none;opacity:1}#intro .pp{animation:none;opacity:1;transform:none;filter:drop-shadow(-3px 6px 6px rgba(25,40,70,.38))}#intro .pp::after,#intro .jn,#intro .bs::after,#intro .rg{display:none}}
 </style>
+<style>
+/* الأزرار بلونَي الباليت الفاتحين: لافندر رمادي #BBBECC + أزرق فولاذي #8DA7C7 */
+.btn-main:not(.rec),.btn-gold,.tbtn.gold,.chip-key,.am-tabs button.on,.tr-s button.on,.sc button.on,.tgl button.on{
+  background:linear-gradient(110deg,#BBBECC,#8DA7C7)!important;color:#1F2D45!important;border-color:transparent!important}
+.btn-main:not(.rec){box-shadow:0 12px 26px -12px rgba(63,95,138,.55)}
+.btn-main:hover:not(:disabled),.btn-gold:hover,.chip-key:hover{filter:brightness(1.05)}
+.btn-main:disabled{opacity:.7}
+</style>
 </head>
 
 <body>
