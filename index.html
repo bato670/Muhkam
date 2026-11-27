@@ -1913,5 +1913,16 @@ const Auth=(()=>{
     s.addEventListener('change',function(){if(s.value!==''){openTpl(+s.value);s.value='';}});}catch(err){console.warn(err);}
 })();
 </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL = "https://kwnyndfspfezaghbefot.supabase.co/rest/v1/";
+const SUPABASE_KEY = "‎‏sb_publishable_2cfrioEl-f8nOULd7CFzkg_TFtFHkfq";
+
+const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+</script>
 </body>
 </html>
