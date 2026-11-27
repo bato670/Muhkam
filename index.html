@@ -374,6 +374,29 @@ html,body{background:#FAF9F6!important}
 .fnum{width:66px;height:66px;border-radius:20px}
 .imp-ic img,.fut-ic img,.fnum img{object-fit:contain;border-radius:0;padding:6px}
 .banner.t{object-fit:contain;height:200px;border-radius:0;box-shadow:none;filter:drop-shadow(0 18px 18px rgba(31,45,69,.22))}
+
+/* ===== الدخول وإنشاء الحساب + بيانات العقد ===== */
+.am{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:1rem;background:rgba(18,26,43,.6);backdrop-filter:blur(4px);overflow:auto}
+.am .hidden,.am.hidden{display:none!important}
+.am-card{width:min(470px,100%);max-height:94vh;overflow:auto;background:#fff;color:#1F2D45;border-radius:26px;padding:1.6rem 1.4rem;box-shadow:0 40px 90px -30px rgba(0,0,0,.6);position:relative}
+.am-x{position:absolute;top:.8rem;left:.8rem;width:36px;height:36px;border-radius:50%;font-size:1.05rem;color:#5d6a8a}.am-x:hover{background:#EEF3FA}
+.am-head{text-align:center;margin-bottom:1rem}.am-head img{width:64px;height:64px;border-radius:18px;margin:0 auto .5rem;box-shadow:0 0 0 2px rgba(141,167,199,.5)}
+.am-tabs{display:grid;grid-template-columns:1fr 1fr;gap:.35rem;background:#EEF3FA;border-radius:16px;padding:4px;margin-bottom:1rem}
+.am-tabs button{padding:.6rem;border-radius:12px;font-weight:800;color:#5d6a8a;transition:.2s}
+.am-tabs button.on{background:linear-gradient(110deg,#1F2D45,#3F5F8A);color:#fff}
+.am-f{display:grid;gap:.75rem;text-align:right}
+.am-f label{display:block;font-weight:700;font-size:.85rem}.am-f label i{color:#b04646;font-style:normal}
+.am-f input:not([type=checkbox]),.am-f select{display:block;width:100%;margin-top:.25rem;padding:.6rem .8rem;border:1.5px solid #DCE3F0;border-radius:12px;background:#fff;color:#1F2D45}
+.am-f input:focus,.am-f select:focus{outline:none;border-color:#3F5F8A;box-shadow:0 0 0 3px rgba(63,95,138,.16)}
+.am-g2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}@media(max-width:480px){.am-g2{grid-template-columns:1fr}}
+.am-err{color:#b04646;font-size:.82rem;min-height:1.1rem;font-weight:700}
+.am-pw{position:relative}.am-pw input{padding-left:3.4rem!important}.am-pw button{position:absolute;left:.7rem;top:50%;transform:translateY(-35%);font-size:.75rem;font-weight:800;color:#3F5F8A}
+.am-chk{display:flex!important;gap:.5rem;align-items:flex-start;font-weight:500!important;font-size:.82rem!important;line-height:1.8}
+.am-sub{width:100%;padding:.8rem;border-radius:14px;font-weight:800;color:#fff;background:linear-gradient(110deg,#1F2D45,#3F5F8A)}.am-sub:disabled{opacity:.6;cursor:wait}
+.ctx-g{display:grid;gap:.7rem;grid-template-columns:1fr 1fr}@media(max-width:560px){.ctx-g{grid-template-columns:1fr}}
+.ctx-l{display:block;font-size:.78rem;font-weight:700;color:var(--muted)}.ctx-l .field{margin-top:.25rem;padding:.5rem .7rem}
+.ctx-c{display:flex;gap:.4rem;align-items:center;margin-bottom:.3rem;font-weight:600}
+.chip-dark.on{background:#fff;color:#263065}
 </style>
 </head>
 
@@ -396,7 +419,7 @@ html,body{background:#FAF9F6!important}
       <button class="tab" data-view="library">مكتبة مُحكَم</button>
       <button class="tab" data-view="assistant">مُساعد مُحكَم الذكي</button>
       <button class="tab" data-view="advisors">مستشارو مُحكم</button>
-      <button type="button" class="login-btn" id="loginBtn">تسجيل الدخول <svg class="arr" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12H5"/><path d="M11 6l-6 6 6 6"/></svg></button>
+      <button type="button" class="login-btn" id="loginBtn"><span id="loginLbl">تسجيل الدخول / إنشاء حساب جديد</span> <svg class="arr" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12H5"/><path d="M11 6l-6 6 6 6"/></svg></button>
     </nav>
   </div>
 </header>
@@ -505,6 +528,20 @@ html,body{background:#FAF9F6!important}
       <label for="tplSel" class="font-bold text-[var(--muted)] whitespace-nowrap">نماذج العقود:</label>
       <select id="tplSel" class="field" style="padding:.45rem .8rem;color:#1F2D45;min-width:0;flex:1"><option value="">اختر نموذجاً لمعاينته وتعبئته…</option></select>
     </div>
+    <details id="ctxBox" class="px-4 py-2.5 border-b border-white/10 text-sm">
+      <summary class="font-bold cursor-pointer text-[var(--muted)]">بيانات العقد الإضافية (اختيارية، ترفع دقة التدقيق)</summary>
+      <div class="ctx-g mt-3">
+        <label class="ctx-l">نوع العقد<select id="cxType" class="field"><option value="">غير محدد</option><option>عقد توريد</option><option>عقد تقديم خدمات</option><option>عقد عمل</option><option>عقد إيجار</option><option>عقد مقاولة وإنشاءات</option><option>عقد شراكة أو تأسيس شركة</option><option>اتفاقية عدم إفصاح</option><option>وكالة تجارية أو امتياز</option><option>تجارة إلكترونية</option><option>عقد مع جهة حكومية</option><option>بيع وشراء</option><option>أخرى</option></select></label>
+        <label class="ctx-l">قيمة العقد التقريبية (ريال)<input id="cxValue" class="field" inputmode="decimal" placeholder="مثال: 250000"></label>
+        <label class="ctx-l">مدة العقد<input id="cxTerm" class="field" placeholder="مثال: 12 شهراً"></label>
+        <label class="ctx-l">مكان التنفيذ أو الاختصاص<input id="cxJur" class="field" placeholder="مثال: الرياض"></label>
+        <label class="ctx-l">مستوى التدقيق<select id="cxDepth" class="field"><option>شامل ومعمّق</option><option>قياسي</option><option>مراجعة سريعة للمخاطر الكبرى</option></select></label>
+        <div class="ctx-l" style="align-self:end"><label class="ctx-c"><input type="checkbox" id="cxPd"> يتضمن معالجة بيانات شخصية</label><label class="ctx-c"><input type="checkbox" id="cxXb"> عقد عابر للحدود أو مع طرف أجنبي</label></div>
+      </div>
+      <div class="ctx-l mt-3">محاور التركيز</div>
+      <div id="cxFocus" class="flex flex-wrap gap-2 mt-1"><button type="button" class="chip-dark" data-f="المالي والدفعات">المالي والدفعات</button><button type="button" class="chip-dark" data-f="الضريبي">الضريبي</button><button type="button" class="chip-dark" data-f="الشرط الجزائي">الشرط الجزائي</button><button type="button" class="chip-dark" data-f="الإنهاء والفسخ">الإنهاء والفسخ</button><button type="button" class="chip-dark" data-f="المسؤولية والتعويض">المسؤولية والتعويض</button><button type="button" class="chip-dark" data-f="السرية">السرية</button><button type="button" class="chip-dark" data-f="الملكية الفكرية">الملكية الفكرية</button><button type="button" class="chip-dark" data-f="حماية البيانات">حماية البيانات</button><button type="button" class="chip-dark" data-f="تسوية المنازعات">تسوية المنازعات</button><button type="button" class="chip-dark" data-f="التنفيذ والتسليم">التنفيذ والتسليم</button></div>
+      <label class="ctx-l mt-3 block">ملاحظات خاصة (دون أسماء أو أرقام هوية)<textarea id="cxNote" rows="2" class="field" placeholder="مثال: الطرف الآخر متأخر في السداد سابقاً، ونرغب بتخفيف الشرط الجزائي"></textarea></label>
+    </details>
     <!-- الأدوات المساندة -->
     <div class="toolbar no-print">
       <button type="button" class="tbtn" id="btnHighlight">تظليل العقد</button>
@@ -591,6 +628,42 @@ html,body{background:#FAF9F6!important}
       <button id="mPrint" class="btn-gold px-4 py-2.5 text-sm">طباعة</button>
     </div>
   </div>
+</div>
+
+<div id="authModal" class="am hidden no-print" role="dialog" aria-modal="true" aria-labelledby="amTitle">
+ <div class="am-card">
+  <button type="button" class="am-x" id="amClose" aria-label="إغلاق">✕</button>
+  <div class="am-head"><img src="logo.jpg" alt="مُحكم"><h3 id="amTitle" class="font-extrabold text-xl">أهلاً بعودتك</h3></div>
+  <div class="am-tabs" id="amTabs" role="tablist"><button type="button" data-v="login" class="on" role="tab">تسجيل الدخول</button><button type="button" data-v="register" role="tab">إنشاء حساب جديد</button></div>
+  <form id="amLogin" class="am-f" novalidate>
+    <label>البريد الإلكتروني أو رقم الجوال <i>*</i><input id="lgId" autocomplete="username" dir="ltr" style="text-align:right"></label>
+    <label>كلمة المرور <i>*</i><div class="am-pw"><input id="lgPw" type="password" autocomplete="current-password"><button type="button" data-show="lgPw">إظهار</button></div></label>
+    <div class="am-err" id="lgErr" role="alert"></div>
+    <button class="am-sub" id="lgBtn" type="submit">تسجيل الدخول</button>
+    <p class="text-sm text-center" style="color:#5d6a8a">ليس لديك حساب؟ <button type="button" class="font-extrabold" style="color:#3F5F8A" data-v="register">أنشئ حساباً جديداً</button></p>
+  </form>
+  <form id="amReg" class="am-f hidden" novalidate>
+    <label>الاسم الكامل <i>*</i><input id="rgName" autocomplete="name"></label>
+    <div class="am-g2">
+      <label>البريد الإلكتروني <i>*</i><input id="rgMail" type="email" autocomplete="email" dir="ltr" style="text-align:right"></label>
+      <label>رقم الجوال <i>*</i><input id="rgTel" inputmode="tel" autocomplete="tel" placeholder="05XXXXXXXX" dir="ltr" style="text-align:right"></label>
+    </div>
+    <label>نوع الحساب <i>*</i><select id="rgType"><option>فرد</option><option>منشأة</option><option>محامٍ</option></select></label>
+    <label id="rgOrgW" class="hidden">اسم المنشأة أو المكتب <i>*</i><input id="rgOrg" autocomplete="organization"></label>
+    <div class="am-g2">
+      <label>كلمة المرور <i>*</i><div class="am-pw"><input id="rgPw" type="password" autocomplete="new-password"><button type="button" data-show="rgPw">إظهار</button></div></label>
+      <label>تأكيد كلمة المرور <i>*</i><input id="rgPw2" type="password" autocomplete="new-password"></label>
+    </div>
+    <label class="am-chk"><input type="checkbox" id="rgOk"> أوافق على شروط الاستخدام وسياسة الخصوصية، وعلى معالجة بياناتي لأغراض الخدمة.</label>
+    <div class="am-err" id="rgErr" role="alert"></div>
+    <button class="am-sub" id="rgBtn" type="submit">إنشاء حساب جديد</button>
+    <p class="text-sm text-center" style="color:#5d6a8a">لديك حساب؟ <button type="button" class="font-extrabold" style="color:#3F5F8A" data-v="login">سجّل الدخول</button></p>
+  </form>
+  <div id="amAcct" class="hidden">
+    <div class="text-center" style="line-height:2.1"><b id="acName" class="text-lg"></b><div id="acMail" dir="ltr" style="color:#5d6a8a"></div><div id="acMeta" class="text-sm" style="color:#5d6a8a"></div></div>
+    <div class="mt-4 grid gap-2"><a id="acAdmin" href="admin.html" class="am-sub text-center hidden" style="display:block">لوحة الإدارة</a><button type="button" id="acOut" class="btn-ghost px-4 py-2.5 font-extrabold">تسجيل الخروج</button></div>
+  </div>
+ </div>
 </div>
 
 <div id="toast" class="toast" role="status"></div>
@@ -720,6 +793,7 @@ function resetChat(){
 function send(){
   if(busy) return;
   let text=contractEl.value.trim(); if(!text) return;
+  if(!Auth.user()){ Auth.open('login'); toast('سجّل الدخول أو أنشئ حساباً للبدء بالتدقيق'); return; }
   if(!memoDone&&text.length>=120){ PrivacyModule.mask(); text=contractEl.value.trim(); }
   contractEl.value=''; updateCount();
   if(memoDone){            /* رسالة نقاش بعد المذكرة */
@@ -742,7 +816,7 @@ async function run(contract,query,isFirst){
   const typing=addMsg('a','<span class="dots"><span></span><span></span><span></span></span>'+(isFirst?'جارٍ تدقيق العقد…':'المستشار يكتب…'));
   try{
     const res=await fetch(PROXY_URL,{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({user_role:chatRole||roleEl.value,contract_text:contract,query,conversation_id:conversationId,user_id:USER_ID,want_flaws:!!isFirst})});
+      body:JSON.stringify({user_role:chatRole||roleEl.value,contract_text:contract,query:(isFirst&&Ctx.text())?query+'\n\n'+Ctx.text():query,context:isFirst?Ctx.get():undefined,conversation_id:conversationId,user_id:(Auth.uid()||USER_ID),want_flaws:!!isFirst})});
     const data=await res.json().catch(()=>({}));
     if(!res.ok) throw new Error(friendlyErr(res,data.message||('تعذّر الاتصال بالخدمة (رمز '+res.status+')')));
     if(!data.answer) throw new Error(friendlyErr(res,data.message||'لم تُرجع الخدمة إجابة.'));
@@ -1166,7 +1240,7 @@ const NavModule=(()=>{
   const setMenu=o=>{ menu.classList.toggle('open',o); mbtn.setAttribute('aria-expanded',o); };
   mbtn.addEventListener('click',e=>{ e.stopPropagation(); setMenu(!menu.classList.contains('open')); });
   menu.addEventListener('click',e=>{ const b=e.target.closest('.tab'); if(b&&b.dataset.view){ go(b.dataset.view,b.dataset.anchor); setMenu(false); } });
-  $('loginBtn').addEventListener('click',()=>{ setMenu(false); toast('خدمة تسجيل الدخول ستتوفر قريباً'); });
+  $('loginBtn').addEventListener('click',()=>{ setMenu(false); Auth.open(); });
   document.addEventListener('click',e=>{ if(!menu.contains(e.target)) setMenu(false); });
   document.addEventListener('keydown',e=>{ if(e.key==='Escape') setMenu(false); });
   document.addEventListener('click',e=>{const a=e.target.closest('a[href^="#"]'); if(!a) return; const id=a.getAttribute('href').slice(1); if(['templates','assistant'].includes(id)){ e.preventDefault(); go('home',id);} });
@@ -1385,7 +1459,7 @@ const DashboardModule=(()=>{
   return {render,record};
 })();
 /* ربط الحفظ التلقائي بعد كل مذكرة تدقيق */
-(()=>{ const _am=addMemo; addMemo=function(md){ _am(md); try{DashboardModule.record(md);}catch{} }; })();
+(()=>{ const _am=addMemo; addMemo=function(md){ _am(md); try{DashboardModule.record(md);}catch{} try{Auth.bump();}catch{} }; })();
 /* ---------- مُشغّل مُحكَم الصوتي ---------- */
 const SpeakModule=(()=>{
   const TTS_ENDPOINT='https://muhkam-tts.s445001732.workers.dev';
@@ -1688,12 +1762,143 @@ const MicModule=(()=>{
     }
   });
   $('bkList').addEventListener('click',e=>{ const r=e.target.dataset.x; if(r){ save(load().filter(b=>b.ref!==r)); list(); render(); } });
-  window.AdvisorsRefresh=()=>{ render(); list(); };
+  window.AdvisorsRefresh=()=>{ const u=Auth.user(); if(u){ st.name=st.name||u.name; st.phone=st.phone||u.phone||''; st.email=st.email||u.email; } render(); list(); };
   render(); list();
 })();
 
 /* روابط الأقسام (بطاقات المزايا والتذييل) */
 document.addEventListener('click',e=>{ const b=e.target.closest('[data-go]'); if(b) NavModule.go(b.dataset.go,b.dataset.anchor); });
+</script>
+<script>
+
+const AuthCore=(()=>{
+  const KU='muhkam_admin_users_v1',KC='muhkam_cred_v1',KS='muhkam_session_v1',KF='muhkam_fails_v1',DAY=864e5;
+  const get=(k,d)=>{try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v);}catch{return d;}};
+  const put=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true;}catch{return false;}};
+  const hex=u=>Array.from(u,b=>b.toString(16).padStart(2,'0')).join('');
+  const salt=()=>hex(crypto.getRandomValues(new Uint8Array(16)));
+  async function hash(pw,s){
+    try{
+      const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveBits']);
+      return hex(new Uint8Array(await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt:new TextEncoder().encode(s),iterations:120000},k,256)));
+    }catch{ let h=5381; for(const c of s+pw) h=((h<<5)+h+c.charCodeAt(0))>>>0; return 'f'+h.toString(16); }
+  }
+  const mail=s=>String(s||'').trim().toLowerCase();
+  const tel=s=>String(s||'').replace(/[\s-]/g,'').replace(/^(\+?966|00966|0)/,'');
+  const users=()=>{const d=get(KU,[]);return Array.isArray(d)?d:[];};
+  const saveUsers=d=>put(KU,d);
+  const creds=()=>get(KC,{});
+  function find(id){const x=String(id||'').trim();return users().find(u=>x.includes('@')?mail(u.email)===mail(x):(tel(u.phone)&&tel(u.phone)===tel(x)));}
+  const wait=k=>{const x=get(KF,{})[k];return x&&x.n>=5&&Date.now()-x.t<6e4?Math.ceil((6e4-(Date.now()-x.t))/1e3):0;};
+  const fail=k=>{const f=get(KF,{}),x=f[k]||{n:0,t:0};x.n=(Date.now()-x.t>6e4?0:x.n)+1;x.t=Date.now();f[k]=x;put(KF,f);};
+  const clear=k=>{const f=get(KF,{});delete f[k];put(KF,f);};
+  async function login(id,pw,need,quiet){
+    const k=mail(id)||'x',w=wait(k); if(w) return {error:'محاولات كثيرة، أعد المحاولة بعد '+w+' ثانية'};
+    const u=find(id),c=u&&creds()[u.id];
+    if(!u||!c||await hash(pw,c.s)!==c.h){fail(k);return {error:'بيانات الدخول غير صحيحة'};}
+    if(u.status==='suspended') return {error:'هذا الحساب معلّق، تواصل مع فريق مُحكم'};
+    if(u.status==='pending') return {error:'حسابك بانتظار التفعيل من فريق مُحكم'};
+    if(need==='admin'&&u.role!=='admin') return {error:'هذا الحساب لا يملك صلاحية الإدارة'};
+    clear(k); if(!quiet) put(KS,{id:u.id,t:Date.now()}); return {user:u};
+  }
+  async function register(d,role){
+    if(users().some(u=>mail(u.email)===mail(d.email))) return {error:'هذا البريد مسجّل مسبقاً، سجّل الدخول'};
+    if(d.phone&&users().some(u=>tel(u.phone)&&tel(u.phone)===tel(d.phone))) return {error:'رقم الجوال مسجّل مسبقاً'};
+    const s=salt(),u={id:'u'+hex(crypto.getRandomValues(new Uint8Array(5))),name:d.name.trim(),email:mail(d.email),phone:String(d.phone||'').replace(/[\s-]/g,''),org:(d.org||'').trim(),type:d.type||'فرد',status:'active',created:new Date().toISOString(),contracts:0,role:role||'user'};
+    const all=users();all.unshift(u);const cr=creds();cr[u.id]={s,h:await hash(d.pw,s)};
+    if(!saveUsers(all)||!put(KC,cr)) return {error:'تعذّر حفظ الحساب، تأكد من السماح بتخزين المتصفح'};
+    return {user:u};
+  }
+  async function setCred(id,pw){const s=salt(),cr=creds();cr[id]={s,h:await hash(pw,s)};put(KC,cr);}
+  const removeCred=id=>{const c=creds();delete c[id];put(KC,c);};
+  function user(){const s=get(KS,null);if(!s||Date.now()-s.t>7*DAY) return null;const u=users().find(x=>x.id===s.id);return u&&u.status==='active'?u:null;}
+  const logout=()=>{try{localStorage.removeItem(KS);}catch{}};
+  function bump(){const s=get(KS,null);if(!s) return;const a=users(),u=a.find(x=>x.id===s.id);if(u){u.contracts=(+u.contracts||0)+1;saveUsers(a);}}
+  const hasAdmin=()=>users().some(u=>u.role==='admin'&&u.status==='active');
+  return {login,register,setCred,removeCred,user,logout,bump,hasAdmin,users,saveUsers};
+})();
+
+const Ctx=(()=>{
+  const v=id=>($(id).value||'').trim();
+  $('cxFocus').addEventListener('click',e=>{const b=e.target.closest('[data-f]');if(b)b.classList.toggle('on');});
+  const get=()=>({contract_type:v('cxType'),contract_value:v('cxValue'),contract_term:v('cxTerm'),jurisdiction:v('cxJur'),review_depth:v('cxDepth'),focus_areas:[...document.querySelectorAll('#cxFocus .on')].map(b=>b.dataset.f),personal_data:$('cxPd').checked,cross_border:$('cxXb').checked,notes:v('cxNote')});
+  function text(){
+    const c=get(),L=[];
+    if(c.contract_type)L.push('نوع العقد: '+c.contract_type);
+    if(c.contract_value)L.push('قيمة العقد التقريبية: '+c.contract_value+' ريال');
+    if(c.contract_term)L.push('مدة العقد: '+c.contract_term);
+    if(c.jurisdiction)L.push('مكان التنفيذ أو الاختصاص: '+c.jurisdiction);
+    L.push('مستوى التدقيق المطلوب: '+c.review_depth);
+    if(c.focus_areas.length)L.push('محاور التركيز: '+c.focus_areas.join('، '));
+    if(c.personal_data)L.push('العقد يتضمن معالجة بيانات شخصية');
+    if(c.cross_border)L.push('العقد عابر للحدود أو مع طرف أجنبي');
+    if(c.notes)L.push('ملاحظات المستخدم: '+c.notes);
+    return 'بيانات مساندة من المستخدم (معطيات للتدقيق وليست من نص العقد):\n'+L.map(x=>'- '+x).join('\n');
+  }
+  return {get,text};
+})();
+
+const Auth=(()=>{
+  const C=AuthCore,m=$('authModal'),setErr=(id,t)=>{$(id).textContent=t||'';};
+  const P={login:'amLogin',register:'amReg',acct:'amAcct'};
+  function view(v){
+    Object.entries(P).forEach(([k,id])=>$(id).classList.toggle('hidden',k!==v));
+    $('amTabs').classList.toggle('hidden',v==='acct');
+    [...$('amTabs').children].forEach(b=>{b.classList.toggle('on',b.dataset.v===v);b.setAttribute('aria-selected',b.dataset.v===v);});
+    $('amTitle').textContent=v==='login'?'أهلاً بعودتك':v==='register'?'ابدأ مع مُحكم':'حسابي';
+    ['lgErr','rgErr'].forEach(i=>setErr(i,''));
+  }
+  function fillAcct(u){
+    $('acName').textContent=u.name;$('acMail').textContent=u.email;
+    $('acMeta').textContent=u.type+(u.org?' · '+u.org:'')+' · العقود المدقَّقة: '+(+u.contracts||0).toLocaleString('ar-SA');
+    $('acAdmin').classList.toggle('hidden',u.role!=='admin');
+  }
+  function sync(){const u=C.user();$('loginLbl').textContent=u?u.name.split(' ')[0]+' · حسابي':'تسجيل الدخول / إنشاء حساب جديد';}
+  function open(v){
+    const u=C.user();view(u?'acct':(v||'login'));if(u)fillAcct(u);
+    m.classList.remove('hidden');
+    setTimeout(()=>{const f=m.querySelector('form:not(.hidden) input');if(f&&!u)f.focus();},30);
+  }
+  const close=()=>m.classList.add('hidden');
+  const done=(msg)=>{close();sync();toast(msg);['lgId','lgPw','rgName','rgMail','rgTel','rgOrg','rgPw','rgPw2'].forEach(i=>$(i).value='');$('rgOk').checked=false;};
+  m.addEventListener('click',e=>{
+    if(e.target===m)return close();
+    const v=e.target.closest('[data-v]');if(v)return view(v.dataset.v);
+    const sh=e.target.closest('[data-show]');
+    if(sh){const i=$(sh.dataset.show);i.type=i.type==='password'?'text':'password';sh.textContent=i.type==='password'?'إظهار':'إخفاء';}
+  });
+  $('amClose').onclick=close;
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
+  $('rgType').addEventListener('change',()=>$('rgOrgW').classList.toggle('hidden',$('rgType').value==='فرد'));
+  $('amLogin').addEventListener('submit',async e=>{
+    e.preventDefault();setErr('lgErr','');
+    const id=$('lgId').value,pw=$('lgPw').value;
+    if(!id.trim()||!pw)return setErr('lgErr','أدخل البريد الإلكتروني أو الجوال وكلمة المرور');
+    $('lgBtn').disabled=true;const r=await C.login(id,pw);$('lgBtn').disabled=false;
+    if(r.error)return setErr('lgErr',r.error);
+    done('أهلاً بك '+r.user.name.split(' ')[0]);
+  });
+  $('amReg').addEventListener('submit',async e=>{
+    e.preventDefault();setErr('rgErr','');
+    const g=id=>$(id).value.trim(),t=g('rgType');
+    const d={name:g('rgName'),email:g('rgMail'),phone:g('rgTel').replace(/[\s-]/g,''),type:t,org:g('rgOrg'),pw:$('rgPw').value};
+    if(d.name.length<3)return setErr('rgErr','أدخل الاسم الكامل (3 أحرف على الأقل)');
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email))return setErr('rgErr','البريد الإلكتروني غير صالح');
+    if(!/^(\+?966|0)?5\d{8}$/.test(d.phone))return setErr('rgErr','رقم الجوال غير صالح، مثال: 05XXXXXXXX');
+    if(t!=='فرد'&&d.org.length<2)return setErr('rgErr','أدخل اسم المنشأة أو المكتب');
+    if(d.pw.length<8||!/\d/.test(d.pw)||!/[A-Za-z\u0621-\u064A]/.test(d.pw))return setErr('rgErr','كلمة المرور 8 أحرف على الأقل وتضم حرفاً ورقماً');
+    if(d.pw!==$('rgPw2').value)return setErr('rgErr','كلمتا المرور غير متطابقتين');
+    if(!$('rgOk').checked)return setErr('rgErr','يلزم الموافقة على الشروط وسياسة الخصوصية');
+    $('rgBtn').disabled=true;
+    try{
+      const r=await C.register(d,'user');if(r.error)return setErr('rgErr',r.error);
+      await C.login(d.email,d.pw);done('تم إنشاء حسابك، أهلاً بك في مُحكم');
+    }finally{$('rgBtn').disabled=false;}
+  });
+  $('acOut').onclick=()=>{C.logout();close();sync();resetChat();welcome();contractEl.value='';updateCount();toast('تم تسجيل الخروج');};
+  sync();
+  return {open,user:C.user,uid:()=>(C.user()||{}).id,bump:C.bump};
+})();
 </script>
 <button type="button" id="toTop" aria-label="الصعود إلى أعلى الصفحة"><svg viewBox="0 0 56 56" aria-hidden="true"><circle class="tr" cx="28" cy="28" r="24"/><circle class="pg" cx="28" cy="28" r="24"/></svg><svg class="ar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="transform:none" aria-hidden="true"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg></button>
 <script>
